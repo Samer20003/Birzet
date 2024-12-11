@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ggg_hhh/screens/home_page/navigation_bar/Ideas.dart';
-import 'package:ggg_hhh/screens/home_page/navigation_bar/Projects.dart';
-import 'package:ggg_hhh/screens/home_page/navigation_bar/WhoWeAre.dart';
-import 'package:ggg_hhh/screens/Welcome/welcome_screen.dart';
+import 'package:startups_hub/screens/HomePage/navigation_bar/Ideas.dart';
+import 'package:startups_hub/screens/HomePage/navigation_bar/Projects.dart';
+import 'package:startups_hub/screens/HomePage/navigation_bar/WhoWeAre.dart';
 import '../../../../constants.dart';
 import '../MyAccount.dart';
 import 'AIChat.dart';
@@ -28,8 +27,11 @@ class _homepagescreenState extends State<homepagescreen> {
   bool _isHoveringContact = false;
 
 
+
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
 
   void _startSearch() {
     setState(() {
@@ -347,7 +349,7 @@ class _homepagescreenState extends State<homepagescreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => WelcomeScreen()),
+                          MaterialPageRoute(builder: (context) => homepagescreen()),
                         );
                       },
                       child: Text(
@@ -360,9 +362,117 @@ class _homepagescreenState extends State<homepagescreen> {
                       ),
                     ),
                   ),
+
+
+
                 ],
               ),
             ),
+            const SizedBox(height: 20),
+
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9, // 90% من عرض الشاشة
+              margin: const EdgeInsets.all(16.0),
+              height: 200, // ارتفاع أكبر للمستطيل
+              decoration: BoxDecoration(
+                color: Colors.blue[100],
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Colors.white, width: 2), // حدود باللون الأبيض
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -20, // وضع العنوان فوق حدود المستطيل
+                    right: 16, // وضع العنوان من جهة اليمين
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      color: Colors.blue[100], // خلفية شفافة للعنوان
+                      child: const Text(
+                        'المشاريع',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue), // لون النص أزرق
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0, bottom: 16.0),
+                    child: const Text(
+                      'هذا هو المحتوى الخاص بالمشاريع.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9, // 90% من عرض الشاشة
+              margin: const EdgeInsets.all(16.0),
+              height: 200, // ارتفاع أكبر للمستطيل
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Colors.white, width: 2), // حدود باللون الأبيض
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -20, // وضع العنوان فوق حدود المستطيل
+                    right: 16, // وضع العنوان من جهة اليمين
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      color: Colors.green[100], // خلفية شفافة للعنوان
+                      child: const Text(
+                        'الأفكار',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue), // لون النص أزرق
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0, bottom: 16.0),
+                    child: const Text(
+                      'هذا هو المحتوى الخاص بالأفكار.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9, // 90% من عرض الشاشة
+              margin: const EdgeInsets.all(16.0),
+              height: 200, // ارتفاع أكبر للمستطيل
+              decoration: BoxDecoration(
+                color: Colors.red[100],
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Colors.white, width: 2), // حدود باللون الأبيض
+              ),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -20, // وضع العنوان فوق حدود المستطيل
+                    right: 16, // وضع العنوان من جهة اليمين
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      color: Colors.red[100], // خلفية شفافة للعنوان
+                      child: const Text(
+                        'الدورات',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue), // لون النص أزرق
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, left: 16.0, right: 16.0, bottom: 16.0),
+                    child: const Text(
+                      'هذا هو المحتوى الخاص بالدورات.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // first comment
+            const SizedBox(height: 20),
 
             // مستطيل البحث
             if (_isSearching)
@@ -386,17 +496,6 @@ class _homepagescreenState extends State<homepagescreen> {
 
             // الجملة في الوسط
             const SizedBox(height: 20),
-            const Center(
-              child: Text(
-                'مرحبًا بكم في من نحن ',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-
             // Footer
             Container(
               color: Colors.grey[200],
