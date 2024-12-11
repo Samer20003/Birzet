@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:startups_hub/screens/HomePage/navigation_bar/Ideas.dart';
-import 'package:startups_hub/screens/HomePage/navigation_bar/Projects.dart';
-import 'package:startups_hub/screens/HomePage/navigation_bar/WhoWeAre.dart';
+import 'package:ggg_hhh/screens/home_page/navigation_bar/Ideas.dart';
+import 'package:ggg_hhh/screens/home_page/navigation_bar/Projects.dart';
+import 'package:ggg_hhh/screens/home_page/navigation_bar/WhoWeAre.dart';
 import '../../../../constants.dart';
 import '../MyAccount.dart';
 import 'AIChat.dart';

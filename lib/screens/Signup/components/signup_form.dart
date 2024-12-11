@@ -14,10 +14,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  // إنشاء مفتاح للتحقق من صحة النموذج
   final _formKey = GlobalKey<FormState>();
-
-  // إنشاء متحكمات النصوص
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -31,19 +28,24 @@ class _SignUpFormState extends State<SignUpForm> {
     var regBody = {
       "name": _usernameController.text,
       "email": _emailController.text,
-      "password": _passwordController.text
+      "password": _passwordController.text,
+      "phoneNumber": _phoneController.text,
+      "gender": _gender
     };
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.60:3000/api/signup'),
+        Uri.parse('http://localhost:3000/api/signup'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(regBody),
       );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        // إذا كانت الاستجابة ناجحة
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User registered successfully')),
         );
+        _showSuccessDialog();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -53,7 +55,6 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         );
       } else {
-        // إذا كانت هناك مشكلة
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${response.body}')),
         );
@@ -70,7 +71,7 @@ class _SignUpFormState extends State<SignUpForm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color(0xE2122088), // استخدم backgroundColor بدلاً من color
+          backgroundColor: const Color(0xE2122088),
           content: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -86,8 +87,7 @@ class _SignUpFormState extends State<SignUpForm> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // إغلاق مربع الحوار
-                // الانتقال إلى HomePageScreen
+                Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const homepagescreen()),
@@ -114,14 +114,29 @@ class _SignUpFormState extends State<SignUpForm> {
             icon: Icons.person,
             hint: "اسم المستخدم",
             controller: _usernameController,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'يرجى إدخال اسم المستخدم';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 16), // مسافة بين الحقول
+          const SizedBox(height: 16),
           _buildTextFormField(
             icon: Icons.email,
             hint: "البريد الإلكتروني",
             controller: _emailController,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'يرجى إدخال البريد الإلكتروني';
+              }
+              if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+                return 'يرجى إدخال بريد إلكتروني صالح';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 16), // مسافة بين الحقول
+          const SizedBox(height: 16),
           _buildTextFormField(
             icon: Icons.lock,
             hint: "كلمة المرور",
@@ -129,11 +144,20 @@ class _SignUpFormState extends State<SignUpForm> {
             obscureText: _obscureTextPassword,
             toggleVisibility: () {
               setState(() {
-                _obscureTextPassword = !_obscureTextPassword; // تبديل حالة إظهار كلمة المرور
+                _obscureTextPassword = !_obscureTextPassword;
               });
             },
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'يرجى إدخال كلمة المرور';
+              }
+              if (value.length < 6) {
+                return 'يجب أن تكون كلمة المرور مكونة من 6 أحرف على الأقل';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 16), // مسافة بين الحقول
+          const SizedBox(height: 16),
           _buildTextFormField(
             icon: Icons.lock,
             hint: "تأكيد كلمة المرور",
@@ -142,25 +166,39 @@ class _SignUpFormState extends State<SignUpForm> {
             obscureText: _obscureTextConfirmPassword,
             toggleVisibility: () {
               setState(() {
-                _obscureTextConfirmPassword = !_obscureTextConfirmPassword; // تبديل حالة إظهار كلمة المرور
+                _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
               });
             },
+            validator: (value) {
+              if (value != _passwordController.text) {
+                return 'كلمة المرور غير متطابقة';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 16), // مسافة بين الحقول
+          const SizedBox(height: 16),
           _buildTextFormField(
             icon: Icons.phone,
-            hint: "رقم الهاتف ",
+            hint: "رقم الهاتف",
             controller: _phoneController,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'يرجى إدخال رقم الهاتف';
+              }
+              if (!RegExp(r'^(059|056)[0-9]{7}$').hasMatch(value) && !RegExp(r'^\+?[0-9]{8,15}$').hasMatch(value)) {
+                return 'يرجى إدخال رقم هاتف صالح';
+              }
+              return null;
+            },
           ),
-          const SizedBox(height: 16), // مسافة بين الحقول
+          const SizedBox(height: 16),
           _buildDropdownField(),
-          const SizedBox(height: 16), // مسافة بين الحقل وزر الإنشاء
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // إظهار مربع النجاح
-                _showSuccessDialog();
+                registerUser(context);
               }
             },
             style: ElevatedButton.styleFrom(
@@ -195,18 +233,19 @@ class _SignUpFormState extends State<SignUpForm> {
     TextEditingController? confirmationController,
     bool obscureText = false,
     VoidCallback? toggleVisibility,
+    String? Function(String?)? validator,
   }) {
     return Container(
-      constraints: BoxConstraints(maxWidth: 300), // تحديد عرض المستطيل
+      constraints: BoxConstraints(maxWidth: 300),
       child: TextFormField(
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
           hintText: hint,
           icon: Icon(icon),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // تقليل حجم المستطيل
+          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0), // جعل الزوايا مستديرة
+            borderRadius: BorderRadius.circular(8.0),
           ),
           suffixIcon: toggleVisibility != null
               ? IconButton(
@@ -217,30 +256,14 @@ class _SignUpFormState extends State<SignUpForm> {
           )
               : null,
         ),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'هذا الحقل لا يمكن أن يكون فارغاً.';
-          }
-          if (hint.contains('البريد الإلكتروني') &&
-              !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-            return 'هذا ليس بريد إلكتروني صالح.';
-          }
-          if (hint.contains('كلمة المرور') && value.length < 6) {
-            return 'يجب أن تكون كلمة المرور 6 أحرف على الأقل.';
-          }
-          if (hint.contains('تأكيد كلمة المرور') &&
-              value != confirmationController?.text) {
-            return 'كلمة المرور لا تتطابق.';
-          }
-          return null;
-        },
+        validator: validator,
       ),
     );
   }
 
   Widget _buildDropdownField() {
     return Container(
-      constraints: BoxConstraints(maxWidth: 300), // تحديد عرض حقل الجنس
+      constraints: BoxConstraints(maxWidth: 300),
       child: DropdownButtonFormField<String>(
         value: _gender,
         items: ['Male', 'Female'].map((String gender) {
@@ -252,9 +275,9 @@ class _SignUpFormState extends State<SignUpForm> {
         decoration: InputDecoration(
           hintText: "اختر الجنس",
           icon: Icon(Icons.person_outline),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0), // نفس تصميم الحقول الأخرى
+          contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0), // جعل الزوايا مستديرة
+            borderRadius: BorderRadius.circular(8.0),
           ),
         ),
         onChanged: (value) {

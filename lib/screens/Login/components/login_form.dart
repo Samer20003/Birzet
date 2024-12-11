@@ -25,12 +25,19 @@ class LoginForm extends StatelessWidget {
       "password": _passwordController.text,
     };
 
+    print('Email: ${_emailController.text}');
+    print('Password: ${_passwordController.text}');
+
     try {
       var response = await http.post(
-        Uri.parse('http://192.168.1.60:3000/api/login'),
+        Uri.parse('http://localhost:3000/api/login'),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(loginBody),
       );
+
+      // طباعة الـ statusCode و الـ response body للمساعدة في الفحص
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         // إذا كانت بيانات تسجيل الدخول صحيحة
@@ -48,12 +55,24 @@ class LoginForm extends StatelessWidget {
             },
           ),
         );
-
+      } else if (response.statusCode == 404) {
+        // إذا كان البريد الإلكتروني غير موجود
+        //var responseData = jsonDecode(response.body);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('User not found. Please check your email address.')),
+        // );
       } else if (response.statusCode == 401) {
-        // إذا كان البريد الإلكتروني أو كلمة المرور غير صحيحة
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Invalid email or password')),
-        );
+        // إذا كانت كلمة المرور غير صحيحة
+       // // var responseData = jsonDecode(response.body);
+       //  ScaffoldMessenger.of(context).showSnackBar(
+       //    SnackBar(content: Text('Invalid password. Please check your password.')),
+       //  );
+      } else if (response.statusCode == 400) {
+        // إذا كانت البيانات غير مكتملة
+        //var responseData = jsonDecode(response.body);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text(responseData['message'] ?? 'Please provide email and password')),
+        // );
       } else {
         // إذا كانت هناك مشكلة أخرى
         ScaffoldMessenger.of(context).showSnackBar(
@@ -68,16 +87,18 @@ class LoginForm extends StatelessWidget {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey, // ربط الـformKey
       child: Column(
         children: [
           TextFormField(
+            controller: _emailController, // ربط الـcontroller هنا
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
-            onSaved: (email) {},
             decoration: const InputDecoration(
               hintText: "البريد الإلكتروني",
               prefixIcon: Padding(
@@ -100,6 +121,7 @@ class LoginForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
+              controller: _passwordController, // ربط الـcontroller هنا
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
@@ -121,12 +143,13 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const homepagescreen(), // تأكد من استيراد HomePage
-                ),
-              );
+              if (_formKey.currentState?.validate() ?? false) {
+                loginUser(context); // إرسال البيانات إذا كانت صحيحة
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please fix the errors')),
+                );
+              }
             },
             child: Text(
               "تسجيل الدخول".toUpperCase(),
@@ -172,4 +195,3 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
-
