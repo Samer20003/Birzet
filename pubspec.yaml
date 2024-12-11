@@ -41,6 +41,8 @@ dependencies:
   responsive: ^0.3.11+11
   google_fonts: ^6.2.1
   font_awesome_flutter: ^10.8.0
+  image_picker: ^1.1.2
+  smooth_page_indicator: ^1.2.0+3
 
 
 dev_dependencies:

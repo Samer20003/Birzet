@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
-import '../../home_page/home_page_screen.dart';
+import '../../home_page/navigation_bar/home_page_screen.dart';
+import '../../Login/components/forgot_password.dart'; // تأكد من استيراد صفحة استعادة كلمة المرور
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -70,17 +71,15 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey,
       child: Column(
         children: [
           TextFormField(
-            controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
             onSaved: (email) {},
             decoration: const InputDecoration(
-              hintText: "Your email",
+              hintText: "البريد الإلكتروني",
               prefixIcon: Padding(
                 padding: EdgeInsets.all(defaultPadding),
                 child: Icon(Icons.email),
@@ -97,17 +96,15 @@ class LoginForm extends StatelessWidget {
               }
               return null;
             },
-
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
-              controller: _passwordController,
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
               decoration: const InputDecoration(
-                hintText: "Your password",
+                hintText: "كلمة المرور",
                 prefixIcon: Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
@@ -124,10 +121,37 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: () {
-              loginUser(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const homepagescreen(), // تأكد من استيراد HomePage
+                ),
+              );
             },
             child: Text(
-              "Login".toUpperCase(),
+              "تسجيل الدخول".toUpperCase(),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold, // جعل النص بالخط العريض
+              ),
+            ),
+          ),
+          const SizedBox(height: defaultPadding),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ForgotPasswordScreen(), // الانتقال إلى صفحة استعادة كلمة المرور
+                ),
+              );
+            },
+            child: const Text(
+              "هل نسيت كلمة المرور؟",
+              style: TextStyle(
+                color: kPrimaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold, // جعل النص بالخط العريض
+              ),
             ),
           ),
           const SizedBox(height: defaultPadding),
@@ -148,3 +172,4 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
+
