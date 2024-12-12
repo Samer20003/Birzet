@@ -35,9 +35,9 @@ class LoginForm extends StatelessWidget {
         body: jsonEncode(loginBody),
       );
 
-      // طباعة الـ statusCode و الـ response body للمساعدة في الفحص
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // // طباعة الـ statusCode و الـ response body للمساعدة في الفحص
+      // print('Response status: ${response.statusCode}');
+      // print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         // إذا كانت بيانات تسجيل الدخول صحيحة
@@ -56,23 +56,23 @@ class LoginForm extends StatelessWidget {
           ),
         );
       } else if (response.statusCode == 404) {
-        // إذا كان البريد الإلكتروني غير موجود
-        //var responseData = jsonDecode(response.body);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('User not found. Please check your email address.')),
-        // );
+       // إذا كان البريد الإلكتروني غير موجود
+        var responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not found. Please check your email address.')),
+        );
       } else if (response.statusCode == 401) {
-        // إذا كانت كلمة المرور غير صحيحة
-       // // var responseData = jsonDecode(response.body);
-       //  ScaffoldMessenger.of(context).showSnackBar(
-       //    SnackBar(content: Text('Invalid password. Please check your password.')),
-       //  );
+        //إذا كانت كلمة المرور غير صحيحة
+        var responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Invalid password. Please check your password.')),
+        );
       } else if (response.statusCode == 400) {
-        // إذا كانت البيانات غير مكتملة
-        //var responseData = jsonDecode(response.body);
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text(responseData['message'] ?? 'Please provide email and password')),
-        // );
+        //إذا كانت البيانات غير مكتملة
+        var responseData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['message'] ?? 'Please provide email and password')),
+        );
       } else {
         // إذا كانت هناك مشكلة أخرى
         ScaffoldMessenger.of(context).showSnackBar(

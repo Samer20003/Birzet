@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ggg_hhh/screens/home_page/navigation_bar/home_page_screen.dart';
 import '../../../constants.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String email;
+  const ResetPasswordScreen({super.key,required this.email});
 
   @override
   _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
@@ -12,17 +15,19 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool _obscureTextNewPassword = true;
   bool _obscureTextConfirmPassword = true;
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        iconTheme: const IconThemeData(color: Colors.white), // تغيير لون الأيقونة إلى الأبيض
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // أيقونة السهم الدائري
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // العودة إلى الصفحة السابقة
+            Navigator.pop(context);
           },
         ),
       ),
@@ -32,11 +37,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // إضافة الصورة هنا
               Image.asset(
-                'assets/images/forgotpassword.PNG', // استبدل بمسار الصورة الخاص بك
-                width: 300, // عرض الصورة
-                height: 300, // ارتفاع الصورة
+                'assets/images/forgotpassword.PNG',
+                width: 300,
+                height: 300,
               ),
               const SizedBox(height: defaultPadding),
               const Text(
@@ -45,8 +49,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
               const SizedBox(height: defaultPadding),
               Container(
-                width: 300, // تحديد عرض الحقل هنا
+                width: 300,
                 child: TextFormField(
+                  controller: _newPasswordController,
                   obscureText: _obscureTextNewPassword,
                   decoration: InputDecoration(
                     hintText: "كلمة المرور الجديدة",
@@ -60,20 +65,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       onPressed: () {
                         setState(() {
-                          _obscureTextNewPassword = !_obscureTextNewPassword; // تبديل الحالة
+                          _obscureTextNewPassword = !_obscureTextNewPassword;
                         });
                       },
                     ),
                   ),
-                  onSaved: (newPassword) {
-                    // هنا يمكنك حفظ كلمة المرور الجديدة
-                  },
                 ),
               ),
               const SizedBox(height: defaultPadding),
               Container(
-                width: 300, // تحديد عرض الحقل هنا
+                width: 300,
                 child: TextFormField(
+                  controller: _confirmPasswordController,
                   obscureText: _obscureTextConfirmPassword,
                   decoration: InputDecoration(
                     hintText: "تأكيد كلمة المرور",
@@ -87,23 +90,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       onPressed: () {
                         setState(() {
-                          _obscureTextConfirmPassword = !_obscureTextConfirmPassword; // تبديل الحالة
+                          _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
                         });
                       },
                     ),
                   ),
-                  onSaved: (confirmPassword) {
-                    // هنا يمكنك إضافة كود للتحقق من تطابق كلمتين المرور
-                  },
                 ),
               ),
               const SizedBox(height: defaultPadding),
               Container(
-                width: 300, // تحديد عرض الزر هنا
+                width: 300,
                 child: ElevatedButton(
                   onPressed: () {
-                    // هنا يمكنك إضافة الكود لتحديث كلمة المرور
-                    _showSuccessDialog(context);
+                    _resetPassword(context);
                   },
                   child: const Text("تحديث كلمة المرور"),
                 ),
@@ -115,25 +114,61 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
+  void _resetPassword(BuildContext context) async {
+    String newPassword = _newPasswordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('كلمة المرور وتأكيد كلمة المرور غير متطابقتين')),
+      );
+      return;
+    }
+
+    var body = {
+      "email": widget.email, // يجب استبداله بالبريد الإلكتروني الفعلي للمستخدم
+      "newPassword": newPassword
+    };
+
+    try {
+      var response = await http.post(
+        Uri.parse('http://localhost:3000/api/password-reset/update'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        _showSuccessDialog(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('خطأ: ${response.body}')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل الاتصال بالخادم: $error')),
+      );
+    }
+  }
+
   void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
-      barrierDismissible: false, // منع إغلاق مربع الحوار عند الضغط في أي مكان آخر
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // إضافة صورة صغيرة فوق النص
               Image.asset(
-                'assets/images/like.PNG', // استبدل بمسار الصورة الخاص بك
-                width: 200, // عرض الصورة
-                height: 200, // ارتفاع الصورة
+                'assets/images/like.PNG',
+                width: 200,
+                height: 200,
               ),
-              const SizedBox(height: 10), // مسافة بين الصورة والنص
+              const SizedBox(height: 10),
               const Text(
                 "تم إعادة تعيين كلمة المرور بنجاح.",
-                style: TextStyle(color: Colors.black), // لون النص
+                style: TextStyle(color: Colors.black),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -142,20 +177,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.blue,
-                backgroundColor: Colors.white, // لون النص
+                backgroundColor: Colors.white,
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // إغلاق مربع الحوار
-                // الانتقال إلى HomePageScreen
+                Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const homepagescreen()),
                 );
               },
-              child: const Text(
-                "حسناً",
-                style: TextStyle(color: Colors.blue), // لون النص
-              ),
+              child: const Text("حسناً"),
             ),
           ],
         );
