@@ -5,8 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../Login/login_screen.dart';
+import '../MyAccount.dart';
+import 'AIChat.dart';
 import 'Ideas.dart';
 import 'WhoWeAre.dart';
+import 'home_page_screen.dart';
 
 class ProjectsScreen extends StatefulWidget {
   const ProjectsScreen({super.key});
@@ -16,16 +19,18 @@ class ProjectsScreen extends StatefulWidget {
 }
 
 class _ProjectsScreenState extends State<ProjectsScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  bool _isHoveringSearch = false;
+  bool _isHoveringNotifications = false;
+  bool _isHoveringProfile = false;
+  bool _isSearching = false;
   bool _isHoveringIdeas = false;
   bool _isHoveringProjects = false;
   bool _isHoveringAboutUs = false;
   bool _isHoveringHome = false;
-  bool _isHoveringSearch = false;
-  bool _isSearching = false;
+  bool _isHoveringContact = false;
 
-
-
+  final TextEditingController _searchController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _startSearch() {
     setState(() {
@@ -43,26 +48,79 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        automaticallyImplyLeading: false,
+        backgroundColor: Color(0xFF0A1D47),
       ),
+      drawer: _buildDrawer(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // المستطيل العلوي
             _buildHeader(),
-            // المستطيل الثاني
             _buildNavigationBar(),
-            // مستطيل البحث
-            _isSearching ? _buildSearchField() : const SizedBox(),
-            const SizedBox(height: 30),
-            // مستطيل سكني تحت المستطيل الثاني
-
-            // Footer
             _buildFooter(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Colors.grey),
+            child: Text(
+              'حسابي',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('حسابي'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('مشاريعي الناشئة'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('سجل النشاطات'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('افكاري'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('استثماراتي'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text('تسجيل خروج'),
+            onTap: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
     );
   }
@@ -71,12 +129,13 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     return Container(
       width: double.infinity,
       height: 80,
-      color: kPrimaryColor,
+      color: kPrimaryColor, // استبدل بـ kPrimaryColor
       padding: const EdgeInsets.all(2.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
             child: Image.asset(
               'assets/images/image500500.png',
               width: 170,
@@ -100,117 +159,250 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   Widget _buildNavigationBar() {
     return Container(
       width: double.infinity,
-      color: kLightCreamColor,
+      color: Colors.grey[200],
       padding: const EdgeInsets.all(12.0),
-      child: Row(
+      child: Column(
         children: [
-          _buildLoginButton(), // زر تسجيل الدخول في أقصى اليسار
-          const Spacer(), // استخدام Spacer لفصل العناصر
           Row(
-            mainAxisAlignment: MainAxisAlignment.end, // محاذاة العناصر في أقصى اليمين
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _buildHoverableText('الأفكار', IdeasScreen(), _isHoveringIdeas, (value) => setState(() => _isHoveringIdeas = value)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // أيقونة الصورة الشخصية
+                  MouseRegion(
+                    onEnter: (_) => setState(() {
+                      _isHoveringProfile = true;
+                    }),
+                    onExit: (_) => setState(() {
+                      _isHoveringProfile = false;
+                    }),
+                    child: GestureDetector(
+                      onTap: () {
+                        _scaffoldKey.currentState?.openDrawer(); // فتح القائمة الجانبية
+                      },
+                      child: Text(
+                        '👤 ',
+                        style: TextStyle(
+                          color: _isHoveringProfile ? Colors.orangeAccent : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+
+                  // أيقونة الإشعارات
+                  MouseRegion(
+                    onEnter: (_) => setState(() {
+                      _isHoveringNotifications = true;
+                    }),
+                    onExit: (_) => setState(() {
+                      _isHoveringNotifications = false;
+                    }),
+                    child: GestureDetector(
+                      onTap: () {
+                        // إضافة وظيفة للإشعارات
+                      },
+                      child: Text(
+                        '🔔 ',
+                        style: TextStyle(
+                          color: _isHoveringNotifications ? Colors.orangeAccent : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+
+                  // أيقونة البحث
+                  MouseRegion(
+                    onEnter: (_) => setState(() {
+                      _isHoveringSearch = true;
+                    }),
+                    onExit: (_) => setState(() {
+                      _isHoveringSearch = false;
+                    }),
+                    child: GestureDetector(
+                      onTap: _startSearch,
+                      child: Text(
+                        '🔍 ',
+                        style: TextStyle(
+                          color: _isHoveringSearch ? Colors.orangeAccent : Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // عنصر فارغ للتوسيع
+              const Spacer(),
+
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringContact = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringContact = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AIChatScreen()),
+                    );
+                  },
+                  child: Text(
+                    'تواصل معنا',
+                    style: TextStyle(
+                      color: _isHoveringContact ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(width: 16),
-              _buildHoverableText('المشاريع', ProjectsScreen(), _isHoveringProjects, (value) => setState(() => _isHoveringProjects = value)),
+
+              // روابط
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringIdeas = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringIdeas = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => IdeasScreen()),
+                    );
+                  },
+                  child: Text(
+                    'الأفكار',
+                    style: TextStyle(
+                      color: _isHoveringIdeas ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(width: 16),
-              _buildHoverableText('من نحن', WhoWeAreScreen(), _isHoveringAboutUs, (value) => setState(() => _isHoveringAboutUs = value)),
+
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringProjects = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringProjects = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProjectsScreen()),
+                    );
+                  },
+                  child: Text(
+                    'المشاريع',
+                    style: TextStyle(
+                      color: _isHoveringProjects ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(width: 16),
-              _buildHoverableText('الرئيسية', WelcomeScreen(), _isHoveringHome, (value) => setState(() => _isHoveringHome = value)),
+
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringAboutUs = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringAboutUs = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => WhoWeAreScreen()),
+                    );
+                  },
+                  child: Text(
+                    'من نحن',
+                    style: TextStyle(
+                      color: _isHoveringAboutUs ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringHome = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringHome = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => homepagescreen()),
+                    );
+                  },
+                  child: Text(
+                    'الرئيسية',
+                    style: TextStyle(
+                      color: _isHoveringHome ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
+
+          const SizedBox(height: 20),
+
+          // مستطيل البحث
+          if (_isSearching)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  labelText: 'ابحث عن...',
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: _stopSearch,
+                  ),
+                ),
+                onSubmitted: (value) {
+                  _stopSearch();
+                },
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildLoginButton() {
-    return Align( // استخدام Align لضبط المحاذاة
-      alignment: Alignment.centerLeft, // محاذاة الزر إلى أقصى اليسار
-
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-          decoration: BoxDecoration(
-            color: Colors.orangeAccent,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: const Text(
-            'تسجيل الدخول',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchButton() {
-    return MouseRegion(
-      onEnter: (_) => setState(() { _isHoveringSearch = true; }),
-      onExit: (_) => setState(() { _isHoveringSearch = false; }),
-      child: GestureDetector(
-        onTap: _startSearch,
-        child: Text(
-          '🔍 بحث',
-          style: TextStyle(
-            color: _isHoveringSearch ? Colors.blue : Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHoverableText(String text, Widget screen, bool isHovering, Function(bool) onHover) {
-    return MouseRegion(
-      onEnter: (_) => onHover(true),
-      onExit: (_) => onHover(false),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
-        },
-        child: Text(
-          text,
-          style: TextStyle(
-            color: isHovering ? Colors.blue : Colors.black,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            shadows: isHovering ? [const Shadow(color: Colors.grey, blurRadius: 5.0)] : null,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: TextField(
-        controller: _searchController,
-        decoration: InputDecoration(
-          labelText: 'ابحث عن...',
-          border: OutlineInputBorder(),
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: _stopSearch,
-          ),
-        ),
-        onSubmitted: (value) {
-          _stopSearch();
-        },
-      ),
-    );
-  }
-
-
-
-
+  // Footer
   Widget _buildFooter() {
     return Container(
       color: Colors.grey[200],
@@ -227,7 +419,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               fontSize: 16,
-              color: const Color(0xE2122088),
+              color: const Color(0xFF0A1D47),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -246,6 +438,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             ),
           ),
           const SizedBox(height: 20),
+
           // أزرار التواصل الاجتماعي
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

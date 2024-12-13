@@ -7,18 +7,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Login/login_screen.dart';
 import '../MyAccount.dart';
 import 'AIChat.dart';
+import 'Ideas.dart';
 import 'Projects.dart';
 import 'WhoWeAre.dart';
 import 'home_page_screen.dart';
 
-class IdeasScreen extends StatefulWidget {
-  const IdeasScreen({super.key});
+class CoursesScreen extends StatefulWidget {
+  const CoursesScreen({super.key});
 
   @override
-  _IdeasScreenState createState() => _IdeasScreenState();
+  _CoursesScreenState createState() => _CoursesScreenState();
 }
 
-class _IdeasScreenState extends State<IdeasScreen> {
+class _CoursesScreenState extends State<CoursesScreen> {
   bool _isHoveringSearch = false;
   bool _isHoveringNotifications = false;
   bool _isHoveringProfile = false;
@@ -28,6 +29,9 @@ class _IdeasScreenState extends State<IdeasScreen> {
   bool _isHoveringAboutUs = false;
   bool _isHoveringHome = false;
   bool _isHoveringContact = false;
+  bool _isHoveringCourses = false;
+
+
 
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -269,6 +273,33 @@ class _IdeasScreenState extends State<IdeasScreen> {
                 ),
               ),
               const SizedBox(width: 16),
+
+              MouseRegion(
+                onEnter: (_) => setState(() {
+                  _isHoveringCourses = true;
+                }),
+                onExit: (_) => setState(() {
+                  _isHoveringCourses = false;
+                }),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CoursesScreen()),
+                    );
+                  },
+                  child: Text(
+                    'الدورات',
+                    style: TextStyle(
+                      color: _isHoveringCourses ? Colors.orangeAccent : Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+
 
               // روابط
               MouseRegion(
