@@ -1,16 +1,95 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import 'Otp_Verification_Screen.dart'; // تأكد من استيراد الشاشة الصحيحة
+import 'package:http/http.dart' as http;
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
+
+  @override
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final TextEditingController _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void _showSuccessDialog(BuildContext context, String email) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xE2122088),
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.check_circle, color: Colors.white, size: 48),
+              SizedBox(height: 16),
+              Text(
+                "لقد تم ارسال الرمز الى بريدك بنجاح تحقق منه",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OtpVerificationScreen(email: email),
+                  ),
+                );
+              },
+              child: const Text(
+                "حسناً",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void sendCode(BuildContext context) async {
+    var email = _emailController.text.trim();
+    var regBody = {"email": email};
+    try {
+      var response = await http.post(
+        Uri.parse('http://localhost:3000/api/password-reset/request'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(regBody),
+      );
+
+      if (response.statusCode == 200) {
+        _showSuccessDialog(context, email);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${response.body}')),
+        );
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to connect to server: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
-        iconTheme: const IconThemeData(color: Colors.white), // تغيير لون الأيقونة إلى الأبيض
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(defaultPadding),
@@ -18,11 +97,10 @@ class ForgotPasswordScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // إضافة الصورة هنا
               Image.asset(
-                'assets/images/email.PNG', // استبدل بمسار الصورة الخاص بك
-                width: 300, // يمكنك تعديل العرض حسب الحاجة
-                height: 300, // يمكنك تعديل الارتفاع حسب الحاجة
+                'assets/images/email.PNG',
+                width: 300,
+                height: 300,
               ),
               const SizedBox(height: defaultPadding),
               const Text(
@@ -32,32 +110,22 @@ class ForgotPasswordScreen extends StatelessWidget {
               ),
               const SizedBox(height: defaultPadding),
               Container(
-                width: 300, // تحديد عرض الحقل هنا
+                width: 300,
                 child: TextFormField(
+                  controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: const InputDecoration(
                     hintText: "البريد الإلكتروني",
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.email),
                   ),
-                  onSaved: (email) {
-                    // هنا يمكنك إضافة الكود للتعامل مع البريد الإلكتروني المدخل
-                  },
                 ),
               ),
               const SizedBox(height: defaultPadding),
               Container(
-                width: 300, // تحديد عرض الزر هنا
+                width: 300,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // هنا يمكنك إضافة الكود لبدء عملية استعادة كلمة المرور
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OtpVerificationScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: () => sendCode(context),
                   child: const Text("أرسل "),
                 ),
               ),
