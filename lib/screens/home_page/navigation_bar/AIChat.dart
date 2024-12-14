@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // لتحويل البيانات إلى JSON
 
 class AIChatScreen extends StatefulWidget {
   const AIChatScreen({super.key});
@@ -11,13 +13,36 @@ class _AIChatScreenState extends State<AIChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final List<Map<String, String>> _messages = []; // استخدام Map لتحديد نوع الرسالة
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       setState(() {
         _messages.add({"text": _messageController.text, "type": "user"}); // إضافة رسالة المستخدم
-        _messages.add({"text": "هذه رد من الذكاء الاصطناعي", "type": "ai"}); // إضافة رد افتراضي من الذكاء الاصطناعي
         _messageController.clear();
       });
+
+      // إرسال الرسالة إلى الخادم الذي يتواصل مع OpenAI API
+      try {
+        final response = await http.post(
+          Uri.parse('http://localhost:3000/ask'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({'message': _messages.last['text']}),
+        );
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          setState(() {
+            _messages.add({"text": data['response'], "type": "ai"}); // إضافة رد الذكاء الاصطناعي
+          });
+        } else {
+          setState(() {
+            _messages.add({"text": "حدث خطأ، حاول مرة أخرى.", "type": "ai"});
+          });
+        }
+      } catch (e) {
+        setState(() {
+          _messages.add({"text": "فشل الاتصال بالخادم. تأكد من اتصال الإنترنت.", "type": "ai"});
+        });
+      }
     }
   }
 
