@@ -45,7 +45,38 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       _searchController.clear();
     });
   }
-
+  final List<Map<String, String>> projects = [
+    {
+      'title': 'حلول الزراعة الذكية',
+      "description": "مشروع يهدف إلى تحسين تقنيات الزراعة.\nنركز على استخدام التكنولوجيا لزيادة الإنتاجية.",
+      'image': 'assets/images/p1 (1).jpeg',
+    },
+    {
+      'title': 'تطوير التطبيقات الذكية',
+      "description": "مشروع لتطوير تطبيقات الذكاء الاصطناعي.\nنقدم حلولاً مبتكرة لتحسين الكفاءة.",
+      'image': 'assets/images/p1 (6).jpeg',
+    },
+    {
+      'title': 'تعليم مبتكر',
+      "description": "مشروع للابتكار في مجال التعليم.\nنهدف إلى تعزيز تجربة التعلم باستخدام التكنولوجيا.",
+      'image': 'assets/images/p1 (5).jpeg',
+    },
+    {
+      'title': 'Sustainable Travel Solutions',
+      "description": "مشروع لتنمية السياحة المستدامة.\nنركز على الحفاظ على البيئة وتعزيز الثقافة المحلية.",
+      'image': 'assets/images/p1 (4).jpeg',
+    },
+    {
+      'title': 'الطاقة الخضراء',
+      "description": "مشروع لتطوير الطاقة المتجددة.\nنركز على توفير حلول طاقة نظيفة ومستدامة.",
+      'image': 'assets/images/p1 (3).jpeg',
+    },
+    {
+      'title': 'مختبر الابتكارات التكنولوجية',
+      "description": "مشروع لتطوير حلول تكنولوجيا المعلومات.\nنركز على تقديم خدمات متكاملة للشركات.",
+      'image': 'assets/images/p1 (2).jpeg',
+    },
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +91,10 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             _buildHeader(),
             _buildNavigationBar(),
             const SizedBox(height: 40),
-            _buildHoverBox(), // إضافة المربع هنا
+            Wrap(
+              alignment: WrapAlignment.center,
+              children: projects.map((project) => _buildProjectCard(project)).toList(),
+            ),
             const SizedBox(height: 40),
             _buildFooter(),
           ],
@@ -325,7 +359,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 25),
 
               MouseRegion(
                 onEnter: (_) => setState(() {
@@ -351,7 +385,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 25),
 
               MouseRegion(
                 onEnter: (_) => setState(() {
@@ -405,94 +439,68 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
       ),
     );
   }
-
-  Widget _buildHoverBox() {
-    return MouseRegion(
-      onEnter: (_) {
-        setState(() {
-          _isHoveringBox = true;
-        });
-      },
-      onExit: (_) {
-        setState(() {
-          _isHoveringBox = false;
-        });
-      },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        width: 250, // حجم المربع
-        height: 250, // حجم المربع
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        alignment: Alignment.center,
-        child: _isHoveringBox
-            ? _buildHoveredContent() // عرض المحتوى عند التحويم
-            : _buildInitialContent(), // عرض المحتوى الأول
+  Widget _buildProjectCard(Map<String, String> project) {
+    return Container(
+      width: 300, // عرض المربع
+      height: 400, // ارتفاع المربع
+      margin: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // تأثير الظل
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildInitialContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(
-          'assets/images/Success1.PNG', // صورة المربع الأول
-          width: 240,
-          height: 240,
-          fit: BoxFit.cover,
-        ),
-        // Text(
-        //   ' طرقات ',
-        //   style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
-        //   textAlign: TextAlign.center,
-        // ),
-      ],
-    );
-  }
-
-  Widget _buildHoveredContent() {
-    return Stack(
-      children: [
-        Positioned(
-          right: 10,
-          top: 10,
-          child: ClipOval(
+      child: Column(
+        children: [
+          // الصورة
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
             child: Image.asset(
-              'assets/images/Success1.PNG', // صورة دائرية عند التحويم
-              width: 80, // حجم الصورة صغير
-              height: 80,
+              project['image']!,
+              width: double.infinity,
+              height: 200, // ارتفاع الصورة
               fit: BoxFit.cover,
             ),
           ),
-        ),
-        Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'طرقات ',
-                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                ' Turqat offers a range of functions and services to have safer travels and ',
-                style: GoogleFonts.poppins(fontSize: 14),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'اقرأ المزيد',
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
-                textAlign: TextAlign.center,
-              ),
-            ],
+          const SizedBox(height: 8),
+          // عنوان المشروع
+          Text(
+            project['title']!,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          // وصف المشروع
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              project['description']!,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 14),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // زر "استثمر الآن"
+          ElevatedButton(
+            onPressed: () {
+              // أضف هنا وظيفة الزر
+            },
+            child: Text('استثمر الآن'),
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(100, 36), // حجم الزر
+            ),
+          ),
+        ],
+      ),
     );
   }
 

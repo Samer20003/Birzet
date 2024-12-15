@@ -29,20 +29,58 @@ class _SuccessStoriesScreenState extends State<SuccessStoriesScreen> {
   bool _isHoveringAboutUs = false;
   bool _isHoveringHome = false;
   bool isHovered = false; // نقلت هنا
+  bool _isHoveringBox = false; // متغير للتحويم على المربع
+
   String? selectedContactValue;
   String? selectedValue;
   TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+  late List<bool> _hoveredStates;
 
+  // بيانات العناصر مع تفاصيل إضافية
   final List<Map<String, String>> _items = [
-    {"title": "عنوان 1", "image": "assets/images/Success1.PNG"},
-    {"title": "عنوان 2", "image": "assets/images/Success2.PNG"},
-    {"title": "عنوان 3", "image": "assets/images/Success3.PNG"},
-    {"title": "عنوان 4", "image": "assets/images/Success4.PNG"},
-    {"title": "عنوان 5", "image": "assets/images/Success5.PNG"},
-    {"title": "عنوان 6", "image": "assets/images/Success6.PNG"},
+  {
+  "title": " طرقات ",
+  "image": "assets/images/Success1.PNG",
+  "description": "Turqat offers a range of functions and services to have safer travels and a peace of mind.",
+  "route": "/page1",
+  },
+  {
+  "title": "سكل زاد",
+  "image": "assets/images/Success2.PNG",
+  "description": " E-learning platform for private tutoring for university students that help them pass their degrees and be prepared for the workforce",
+  "route": "/page2",
+  },
+  {
+  "title": "SHIFT-ICT ",
+  "image": "assets/images/Success3.PNG",
+  "description": "SHIFT-ICT is an innovative, technological service provider company that delivers IT services with high quality and competitive cost advantages.",
+  "route": "/page3",
+  },
+  {
+  "title": "Developers Plus",
+  "image": "assets/images/Success4.PNG",
+  "description": " We, Developers Plus, are a specialized company in Software Development.",
+  "route": "/page4",
+  },
+  {
+  "title": " Algebra Intelligence",
+  "image": "assets/images/Success5.PNG",
+  "description": " Algebra Intelligence is a software development firm that integrates artificial intelligence solutions into the Energy Sector to usher smart technology into sustainable development.",
+  "route": "/page5",
+  },
+  {
+  "title": " Newline Tech Company for Information Technology",
+  "image": "assets/images/Success6.PNG",
+  "description": "NEWLINE TECH) is a Palestinian company established early 2011. NEWLINE TECH is dedicated to provide technology-based solutions, In simple terms",
+  "route": "/page6",
+  },
   ];
-
+  @override
+  void initState() {
+    super.initState();
+    _hoveredStates = List<bool>.filled(_items.length, false);
+  }
 
 
   @override
@@ -60,8 +98,6 @@ class _SuccessStoriesScreenState extends State<SuccessStoriesScreen> {
             _buildNavigationBar(),
             const SizedBox(height: 40),
             _buildGrid(), // إضافة المربعات هنا
-            const SizedBox(height: 40),
-            _buildCircleFrame("عنوان", "assets/images/image1.jpg"),
             const SizedBox(height: 40),
             _buildFooter(),
           ],
@@ -410,111 +446,99 @@ class _SuccessStoriesScreenState extends State<SuccessStoriesScreen> {
         ),
         itemCount: _items.length,
         itemBuilder: (context, index) {
-          return _buildCircleFrame(_items[index]["title"]!, _items[index]["image"]!);
+          return _buildCircleFrame(index);
         },
       ),
     );
   }
 
-  Widget _buildCircleFrame(String title, String imagePath) {
+  Widget _buildCircleFrame(int index) {
     return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: Stack(
+      onEnter: (_) {
+        setState(() {
+          _hoveredStates[index] = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          _hoveredStates[index] = false;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        width: 250,
+        height: 250,
+        decoration: BoxDecoration(
+          color: _hoveredStates[index] ? Colors.grey[300] : Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
         alignment: Alignment.center,
-        children: [
-          // مربع خلفي (برتقالي) يظهر عند التمرير
-          AnimatedOpacity(
-            opacity: isHovered ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 300),
-            child: Transform(
-              alignment: Alignment.center,
-              transform: Matrix4.identity()..rotateY(isHovered ? 3.14 : 0), // دوران 180 درجة عند التمرير
-              child: Container(
-                width: 280,
-                height: 280,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.orange, // لون المربع الخلفي
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  title, // نص داخل المربع الخلفي
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // مربع أمامي (سكني)
-          Container(
-            width: 280,
-            height: 280,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.grey[300], // لون المربع الأمامي
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              title, // نص داخل المربع الأمامي
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          // دائرة كبيرة (الإطار الخارجي)
-          Container(
-            width: 280,
-            height: 280,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 8),
-            ),
-          ),
-          // دائرة أصغر (الإطار الداخلي)
-          Container(
-            width: 260,
-            height: 260,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[200],
-              border: Border.all(color: Colors.yellow[600]!, width: 4),
-            ),
-          ),
-          // الصورة داخل الدائرة الأصغر
-          ClipOval(
-            child: Container(
-              width: 220, // حجم الصورة
-              height: 220, // حجم الصورة
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          // النص عند التمرير فوق الدائرة
-          if (isHovered)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                color: Colors.white,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-        ],
+        child: _hoveredStates[index]
+            ? _buildHoveredContent(index) // تمرير الفهرس للمحتوى عند التحويم
+            : _buildInitialContent(_items[index]["title"]!, _items[index]["image"]!),
       ),
+    );
+  }
+
+  Widget _buildInitialContent(String title, String imagePath) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          imagePath,
+          width: 240,
+          height: 240,
+          fit: BoxFit.cover,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHoveredContent(int index) {
+    return Stack(
+      children: [
+        Positioned(
+          right: 10,
+          top: 10,
+          child: ClipOval(
+            child: Image.asset(
+              _items[index]["image"]!, // استخدام الصورة الخاصة بكل عنصر
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _items[index]["title"]!, // استخدام العنوان الخاص بكل عنصر
+                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                _items[index]["description"]!, // استخدام الوصف الخاص بكل عنصر
+                style: GoogleFonts.poppins(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, _items[index]["route"]!); // التنقل إلى الصفحة الخاصة
+                },
+                child: Text(
+                  'اقرأ المزيد',
+                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
