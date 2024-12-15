@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ggg_hhh/Screens/Welcome/welcome_screen.dart';
 import 'package:ggg_hhh/constants.dart';
+import 'package:ggg_hhh/screens/home_page/navigation_bar/home_page_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           )),
-      home: const WelcomeScreen(),
+      home: const homepagescreen(),
     );
   }
 }

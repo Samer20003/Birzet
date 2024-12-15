@@ -62,6 +62,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
           children: [
             _buildHeader(),
             _buildNavigationBar(),
+            const SizedBox(height: 40),
             _buildFooter(),
           ],
         ),
@@ -432,6 +433,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
       ),
     );
   }
+
 
   // Footer
   Widget _buildFooter() {

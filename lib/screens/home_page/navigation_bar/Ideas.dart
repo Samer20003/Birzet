@@ -58,6 +58,7 @@ class _IdeasScreenState extends State<IdeasScreen> {
           children: [
             _buildHeader(),
             _buildNavigationBar(),
+            const SizedBox(height: 40),
             _buildFooter(),
           ],
         ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ggg_hhh/screens/welcome/welcome_screen.dart';
-import '../../../../constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:ggg_hhh/screens/welcome/welcome_screen.dart';
+import '../../../../constants.dart';
 import '../../Login/login_screen.dart';
 import '../MyAccount.dart';
 import 'AIChat.dart';
@@ -28,6 +28,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
   bool _isHoveringAboutUs = false;
   bool _isHoveringHome = false;
   bool _isHoveringContact = false;
+  bool _isHoveringBox = false; // متغير للتحويم على المربع
 
   final TextEditingController _searchController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -58,6 +59,9 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
           children: [
             _buildHeader(),
             _buildNavigationBar(),
+            const SizedBox(height: 40),
+            _buildHoverBox(), // إضافة المربع هنا
+            const SizedBox(height: 40),
             _buildFooter(),
           ],
         ),
@@ -129,7 +133,7 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
     return Container(
       width: double.infinity,
       height: 80,
-      color: kPrimaryColor, // استبدل بـ kPrimaryColor
+      color: kPrimaryColor,
       padding: const EdgeInsets.all(2.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -399,6 +403,96 @@ class _ProjectsScreenState extends State<ProjectsScreen> {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildHoverBox() {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          _isHoveringBox = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          _isHoveringBox = false;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        width: 250, // حجم المربع
+        height: 250, // حجم المربع
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.center,
+        child: _isHoveringBox
+            ? _buildHoveredContent() // عرض المحتوى عند التحويم
+            : _buildInitialContent(), // عرض المحتوى الأول
+      ),
+    );
+  }
+
+  Widget _buildInitialContent() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/images/Success1.PNG', // صورة المربع الأول
+          width: 240,
+          height: 240,
+          fit: BoxFit.cover,
+        ),
+        // Text(
+        //   ' طرقات ',
+        //   style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold),
+        //   textAlign: TextAlign.center,
+        // ),
+      ],
+    );
+  }
+
+  Widget _buildHoveredContent() {
+    return Stack(
+      children: [
+        Positioned(
+          right: 10,
+          top: 10,
+          child: ClipOval(
+            child: Image.asset(
+              'assets/images/Success1.PNG', // صورة دائرية عند التحويم
+              width: 80, // حجم الصورة صغير
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'طرقات ',
+                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                ' Turqat offers a range of functions and services to have safer travels and ',
+                style: GoogleFonts.poppins(fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'اقرأ المزيد',
+                style: GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
