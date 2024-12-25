@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../constants.dart';
+import '../../Welcome/welcome_screen.dart';
+import '../Activity.dart';
 import '../MyAccount.dart';
+import '../MyIdeas.dart';
+import '../MyInvestments.dart';
+import '../thebeginning.dart';
 import 'AIChat.dart';
 import 'Chat.dart';
 import 'Courses.dart';
@@ -199,14 +203,7 @@ class _homepagescreenState extends State<homepagescreen> {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(color: Colors.grey),
-            child: Text(
-              'حسابي',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: SizedBox.shrink(), // أو يمكنك استخدام Widget آخر إذا كنت تريد
           ),
           ListTile(
             title: const Text('حسابي'),
@@ -220,31 +217,46 @@ class _homepagescreenState extends State<homepagescreen> {
           ListTile(
             title: const Text('مشاريعي الناشئة'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => thebeginningScreen()), // استبدل بـ مشاريعيPage() بالصفحة المطلوبة
+              );
             },
           ),
           ListTile(
             title: const Text('سجل النشاطات'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ActivityScreen()), // استبدل بـ سجلالنشاطاتPage() بالصفحة المطلوبة
+              );
             },
           ),
           ListTile(
             title: const Text('افكاري'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyIdeasScreen()), // استبدل بـ افكاريPage() بالصفحة المطلوبة
+              );
             },
           ),
           ListTile(
             title: const Text('استثماراتي'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyInvestmentsScreen()), // استبدل بـ استثماراتيPage() بالصفحة المطلوبة
+              );
             },
           ),
           ListTile(
             title: const Text('تسجيل خروج'),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomeScreen()), // استبدل بـ استثماراتيPage() بالصفحة المطلوبة
+              );
             },
           ),
         ],
@@ -256,7 +268,7 @@ class _homepagescreenState extends State<homepagescreen> {
     return Container(
       width: double.infinity,
       height: 80,
-      color: kPrimaryColor, // استبدل بـ kPrimaryColor
+      color: Color(0xFF0A1D47), // استخدام اللون مباشرة
       padding: const EdgeInsets.all(2.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

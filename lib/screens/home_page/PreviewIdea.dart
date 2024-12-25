@@ -3,19 +3,20 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'Activity.dart';
-import 'AddIdea.dart';
 import 'MyAccount.dart';
+import 'MyIdeas.dart';
 import 'MyInvestments.dart';
 import 'MyStartupProjects.dart';
-import 'PreviewIdea.dart';
 
-class MyIdeasScreen extends StatefulWidget {
+class PreviewIdeaScreen extends StatefulWidget {
   @override
-  _MyIdeasScreenState createState() => _MyIdeasScreenState();
+  _PreviewIdeaScreenState createState() => _PreviewIdeaScreenState();
 }
 
-class _MyIdeasScreenState extends State<MyIdeasScreen> {
+class _PreviewIdeaScreenState extends State<PreviewIdeaScreen> {
   String _profileImage = ''; // متغير لتخزين مسار الصورة
+  String _displayedText = ''; // المتغير لتخزين النص المعروض
+  String? _displayedImagePath; // المتغير لتخزين مسار الصورة المعروضة
 
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -25,6 +26,13 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
         _profileImage = image.path; // تحديث مسار الصورة
       });
     }
+  }
+
+  void _updateContent(String title, {String? imagePath}) {
+    setState(() {
+      _displayedText = title;
+      _displayedImagePath = imagePath;
+    });
   }
 
   @override
@@ -91,7 +99,6 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
               height: 50,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                 children: [
                   InkWell(
                     onTap: () {
@@ -157,7 +164,6 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
                       child: Text('مشاريعي الناشئة', style: TextStyle(color: Color(0xFF001F3F))),
                     ),
                   ),
-
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -182,87 +188,82 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
               color: Color(0xFF0A1D47), // لون الخط
             ),
             SizedBox(height: 40),
-            Container(
-              alignment: Alignment.centerRight, // محاذاة العنوان لليمين
-              margin: EdgeInsets.only(right: 80.0), // بعد 80 بكسل من الجهة اليمنى
-              child: Text(
-                'أفكاري',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.right,
-              ),
-            ),
             SizedBox(height: 20), // مسافة بين العنوان والإشعارات
 
-
+            // **إضافة مربع المشروع**
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // توزيع العناصر بالتساوي
               children: [
-                // مربع المشروع الجديد (إشارة الموجب) في أقصى اليمين
-                Container(
-                  width: 250,
-                  height: 350,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFF0F0F0),
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 150,
-                        height: 150,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.transparent,
+                // المستطيل الجديد بجانب المربع
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.only(left: 10), // مسافة بين المربع والمستطيل
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF0F0F0),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    height: 350, // إضافة ارتفاع محدد
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end, // محاذاة النص لليمين
+                      children: [
+                        Text(
+                          'عن الفكرة ',
+                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.right, // محاذاة النص لليمين
                         ),
-                        child: Text(
-                          '+',
-                          style: TextStyle(
-                            fontSize: 60,
-                            color: Color(0xFF0A1D47),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 55),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AddideaScreen()),
-                          );
+                        SizedBox(height: 40),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end, // تغيير المحاذاة لتقليل الفراغ
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                _updateContent("هذه هي الملاحظات.");
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0), // تقليل الهوامش
+                                child: Text('الملاحظات', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
 
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF0A1D47),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+
+                            GestureDetector(
+                              onTap: () {
+                                _updateContent("هذا هو النص الخاص بسير الفكرة .");
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0), // تقليل الهوامش
+                                child: Text('سير الفكرة', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _updateContent("هذا هو النص الخاص بالصفحة حول.");
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0), // تقليل الهوامش
+                                child: Text('حول', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+
+                          ],
                         ),
-                        child: Text(
-                          'اضافة فكرة جديدة ',
-                          style: TextStyle(color: Colors.white, fontSize: 12),
-                        ),
-                      ),
-                    ],
+                        SizedBox(height: 20), // مسافة بين العبارات
+                        // عرض المحتوى المعروض
+                        _displayedImagePath != null
+                            ? Image.asset(_displayedImagePath!)
+                            : Text(_displayedText, textAlign: TextAlign.right),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(width: 25),
-                // مربع المشروع الأول (الذي يحتوي على الصورة) بجانب المشروع الجديد من جهة اليسار
+
+                // المربع الحالي
                 Container(
                   width: 250,
                   height: 350,
                   padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.only(right: 30), // إضافة مسافة من اليمين
+                  margin: EdgeInsets.only(right: 10, left: 20), // ترك مساحة 10 بكسل
                   decoration: BoxDecoration(
                     color: Color(0xFFF0F0F0),
                     borderRadius: BorderRadius.circular(15),
@@ -297,7 +298,7 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        'نوع الفكرة ',
+                        'نوع الفكرة',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                         textAlign: TextAlign.center,
                       ),
@@ -308,65 +309,8 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
                         color: Color(0xFFE0E0E0),
                       ),
                       SizedBox(height: 15),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 40,
-                              child: ElevatedButton(
-                                onPressed: () {
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => PreviewIdeaScreen()),
-                                  );
-
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF0A1D47),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  'معاينة',
-                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 80,
-                              height: 40,
-                              child: ElevatedButton(
-                                onPressed: () {
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => AddideaScreen()),
-                                  );
-
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF0A1D47),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  'تعديل',
-                                  style: TextStyle(color: Colors.white, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Text(
-                        'حالة الفكرة ',
+                        'وصف مختصر', // تغيير النص إلى وصف مختصر
                         style: TextStyle(fontSize: 14, color: Colors.green),
                         textAlign: TextAlign.center,
                       ),
@@ -377,7 +321,6 @@ class _MyIdeasScreenState extends State<MyIdeasScreen> {
             ),
 
             SizedBox(height: 100), // يمكنك تغيير القيمة حسب الحاجة
-
           ],
         ),
       ),
