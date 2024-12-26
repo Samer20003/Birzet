@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../constants.dart';
 import '../../Welcome/welcome_screen.dart';
 import '../Activity.dart';
 import '../MyAccount.dart';
 import '../MyIdeas.dart';
-import '../MyInvestments.dart';
 import '../thebeginning.dart';
 import 'AIChat.dart';
 import 'Chat.dart';
@@ -88,21 +88,29 @@ class _homepagescreenState extends State<homepagescreen> {
       'image': 'assets/images/D4.jpeg',
       'title': 'تطبيق توصيل الطعام',
       'description': 'تطوير تطبيق يتيح للمستخدمين طلب الطعام من المطاعم المحلية وتوصيله إلى منازلهم.',
+      'commentsCount': 5, // عدد التعليقات
+      'likesCount': 15,    // عدد الإعجابات
     },
     {
       'image': 'assets/images/D1.jpeg',
       'title': 'منصة التعليم الإلكتروني',
       'description': 'إنشاء منصة لتقديم الدورات التعليمية عبر الإنترنت لمختلف المجالات.',
+      'commentsCount': 8, // عدد التعليقات
+      'likesCount': 20,    // عدد الإعجابات
     },
     {
       'image': 'assets/images/D3.jpeg',
       'title': 'خدمة تأجير السيارات',
       'description': 'تطوير خدمة تأجير السيارات عبر تطبيق يتيح للمستخدمين اختيار السيارة المناسبة.',
+      'commentsCount': 12, // عدد التعليقات
+      'likesCount': 30,    // عدد الإعجابات
     },
     {
       'image': 'assets/images/D2.jpeg',
       'title': 'تطبيق إدارة المهام',
       'description': 'تطبيق يساعد المستخدمين على تنظيم مهامهم اليومية وإدارة الوقت بشكل فعال.',
+      'commentsCount': 3, // عدد التعليقات
+      'likesCount': 10,    // عدد الإعجابات
     },
   ];
 
@@ -238,15 +246,6 @@ class _homepagescreenState extends State<homepagescreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyIdeasScreen()), // استبدل بـ افكاريPage() بالصفحة المطلوبة
-              );
-            },
-          ),
-          ListTile(
-            title: const Text('استثماراتي'),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyInvestmentsScreen()), // استبدل بـ استثماراتيPage() بالصفحة المطلوبة
               );
             },
           ),
@@ -612,7 +611,7 @@ class _homepagescreenState extends State<homepagescreen> {
   List<Widget> _buildIdeaCards() {
     return List.generate(3, (index) {
       int itemIndex = (_currentIdeaIndex + index) % _ideas.length;
-      return _buildInfoCard(_ideas[itemIndex]);
+      return _buildInfoCardForIdeas(_ideas[itemIndex]); // استخدم الدالة الجديدة
     });
   }
 
@@ -622,7 +621,94 @@ class _homepagescreenState extends State<homepagescreen> {
       return _buildInfoCard(_courses[itemIndex]); // استخدام بيانات الدورات
     });
   }
-
+  Widget _buildInfoCardForIdeas(Map<String, dynamic> item) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.28,
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // صورة الفكرة
+          Container(
+            width: 180,
+            height: 120,
+            margin: const EdgeInsets.only(bottom: 10.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              image: DecorationImage(
+                image: AssetImage('assets/images/defaultimg.jpeg'), // استبدل بهذا المسار للصورة الموحدة
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          // اسم الفكرة
+          Text(
+            item['title'],
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          // وصف الفكرة
+          Text(
+            item['description'],
+            style: const TextStyle(fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8), // مسافة قبل الأيقونات
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // أيقونة التعليقات
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.comment, color: kPrimaryColor),
+                    onPressed: () {
+                      // هنا يمكنك إضافة المنطق للتعليقات
+                    },
+                  ),
+                  Text(
+                    '${item['commentsCount']}', // عدد التعليقات
+                    style: TextStyle(fontSize: 12), // حجم النص
+                  ),
+                ],
+              ),
+              // أيقونة الإعجاب
+              Column(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.favorite_border, color: kPrimaryColor),
+                    onPressed: () {
+                      // هنا يمكنك إضافة المنطق للإعجاب
+                    },
+                  ),
+                  Text(
+                    '${item['likesCount']}', // عدد الإعجابات
+                    style: TextStyle(fontSize: 12), // حجم النص
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
   Widget _buildInfoCard(Map<String, dynamic> item) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.28,

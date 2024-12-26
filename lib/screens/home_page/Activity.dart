@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'MyIdeas.dart';
-import 'MyInvestments.dart';
 import 'MyStartupProjects.dart';
 
 class ActivityScreen extends StatefulWidget {
@@ -90,7 +89,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildNavButton(context, 'سجل النشاطات', ActivityScreen()),
-                  _buildNavButton(context, 'استثماراتي', MyInvestmentsScreen()),
                   _buildNavButton(context, 'أفكاري', MyIdeasScreen()),
                   _buildNavButton(context, 'مشاريعي الناشئة', MyStartupProjectsScreen()),
                   _buildNavButton(context, 'حسابي', MyStartupProjectsScreen()),

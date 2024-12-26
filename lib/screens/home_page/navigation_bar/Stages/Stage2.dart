@@ -31,7 +31,6 @@ class _PlanningScreenState extends State<PlanningScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-
             const SizedBox(height: 40),
             _buildIdeaStudySection(),
           ],
@@ -48,195 +47,227 @@ class _PlanningScreenState extends State<PlanningScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // الصورة على اليسار
-          Image.asset(
-            'assets/images/Stage2.jpg',
-            width: 500,
+          Container(
+            width: 500, // Adjusted width for better layout
             height: 500,
+            child: Image.asset(
+              'assets/images/Stage2.jpg',
+              fit: BoxFit.cover, // ملاءمة الصورة
+            ),
           ),
           // النص على اليمين
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                'مرحلة التحقق والتخطيط',
-                style: GoogleFonts.poppins(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              Text(
-                '  التحقق من صحة الفكرة -',
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold), // Largest font
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'إن التحقق من صحة فكرة الشركة الناشئة يعني التحقق مما إذا كان هناك طلب.\nحقيقي على منتجك أو خدمتك وتحديد المبلغ الذي يرغب المستهلكون في دفعه.',
-                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold), // Set the font weight to bold
-                textAlign: TextAlign.right, // Align text to the right
-              ),
-
-              const SizedBox(height: 20),
-              _buildTaskCard('تشكيل فرضيات أساسية', ' حول من هم عملاؤك المستهدفون، والمشكلات التي يواجهونها، وكيف يمكن لمنتجك أو خدمتك حل هذه المشكلات', 0),
-              const SizedBox(height: 8),
-              _buildTaskCard('اجمع المعلومات الداعمة ', 'استخدم التقارير والدراسات الصناعية لدعم فرضياتك، وفكر في إجراء استطلاعات الرأي والمقابلات ومجموعات التركيز مع جمهورك المستهدف.', 0),
-              const SizedBox(height: 8),
-              const SizedBox(height: 20),
-
-              const SizedBox(height: 15),
-              Text(
-                'إنشاء خطة العمل -',
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold), // Largest font
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'ابدأ الآن بوضع خطة عمل واضحة وملهمة.',
-                style: GoogleFonts.poppins(fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreateBusinessPlanScreen()), // الانتقال إلى صفحة إنشاء خطة العمل
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  iconColor: kPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+          Expanded( // استخدام Expanded للسماح بالتوزيع المناسب
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'مرحلة التحقق والتخطيط',
+                  style: GoogleFonts.poppins(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
                   ),
-                  minimumSize: Size(150, 40),
                 ),
-                child: Text('انشاء نموذج العمل التجاري(BMC)'),
-              ),
-
-              const SizedBox(height: 40),
-
-
-              Text(
-                ' سجل عملك -',
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold), // Largest font
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 8),
-
-              _buildChecklist(),
-
-
-              const SizedBox(height: 40),
-
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => PlanningDetailsScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  iconColor: kPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  minimumSize: Size(150, 40),
+                Text(
+                  'التحقق من صحة الفكرة -',
+                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
                 ),
-                child: Text('معلومات أكثر عن التحقق والتخطيط'),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => StudyTheIdeaScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      minimumSize: Size(150, 40),
+                const SizedBox(height: 8),
+                const SizedBox(height: 20),
+                _buildTaskCard(
+                  'تشكيل فرضيات أساسية',
+                  'حول من هم عملاؤك المستهدفون، والمشكلات التي يواجهونها، وكيف يمكن لمنتجك أو خدمتك حل هذه المشكلات',
+                  0,
+                ),
+                const SizedBox(height: 8),
+                _buildTaskCard(
+                  'اجمع المعلومات الداعمة',
+                  'استخدم التقارير والدراسات الصناعية لدعم فرضياتك، وفكر في إجراء استطلاعات الرأي والمقابلات ومجموعات التركيز مع جمهورك المستهدف.',
+                  1,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'إنشاء خطة العمل -',
+                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
+                const SizedBox(height: 20),
+                _buildTask(
+                  'قم بانشاء خطة العمل',
+                  'إذا لم يكن لديك نموذج عمل بعد، فلا تقلق! دعنا نساعدك في بناء نموذج عمل متميز يحقق أهدافك.',
+                  2,
+                ),
+                const SizedBox(height: 40),
+                Text(
+                  'سجل عملك -',
+                  style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
+                const SizedBox(height: 8),
+                _buildChecklist(),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PlanningDetailsScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    iconColor: kPrimaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
-                    label: Text('المرحلة السابقة', style: TextStyle(color: Colors.white)),
+                    minimumSize: Size(150, 40),
                   ),
-                  const SizedBox(width: 20),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FinancingScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  child: Text('معلومات أكثر عن التحقق والتخطيط'),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => StudyTheIdeaScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: Size(150, 40),
                       ),
-                      minimumSize: Size(150, 40),
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      label: Text('المرحلة السابقة', style: TextStyle(color: Colors.white)),
                     ),
-                    icon: Icon(Icons.arrow_forward, color: Colors.white),
-                    label: Text('المرحلة التالية', style: TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 20),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => FinancingScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: Size(150, 40),
+                      ),
+                      icon: Icon(Icons.arrow_forward, color: Colors.white),
+                      label: Text('المرحلة التالية', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-
-
+  Widget _buildTask(String title, String description, int index) {
+    return Container(
+      width: 500,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isChecked[index] = !_isChecked[index];
+                  });
+                },
+                child: Icon(
+                  _isChecked[index] ? Icons.check_box : Icons.check_box_outline_blank,
+                  color: _isChecked[index] ? Colors.orangeAccent : Colors.grey,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.right,
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            description,
+            textAlign: TextAlign.right,
+            style: GoogleFonts.poppins(fontSize: 14),
+          ),
+          const SizedBox(height: 12), // فراغ قبل الزر
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CreateBusinessPlanScreen()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              iconColor: kPrimaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              minimumSize: Size(150, 40),
+            ),
+            child: Text('إنشاء نموذج العمل التجاري (BMC)'),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildChecklist() {
     return Column(
       children: [
         _buildTaskCard(
-            'اختيار اسم لشركتك الناشئة؛', // Add a description here
-            'يجب أن يكون الاسم فريدًا وسهل التذكر ويتوافق مع القوانين المحلية.',
-
-            2
+          'اختيار اسم لشركتك الناشئة؛',
+          'يجب أن يكون الاسم فريدًا وسهل التذكر ويتوافق مع القوانين المحلية.',
+          2,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
-            ' الحصول على رقم تعريف صاحب العمل',
-            'يعد هذا ضروريًا لتوظيف الموظفين وفتح حسابات مصرفية تجارية ودفع الضرائب',
-
-            3
+          'الحصول على رقم تعريف صاحب العمل',
+          'يعد هذا ضروريًا لتوظيف الموظفين وفتح حسابات مصرفية تجارية ودفع الضرائب.',
+          3,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
-            'تسجيل عملك لدى الدولة',
-            'تسجيل العمل يوفر لك الحماية القانونية ويحتم عليك الحصول على التراخيص اللازمة.',
-
-            4
+          'تسجيل عملك لدى الدولة',
+          'تسجيل العمل يوفر لك الحماية القانونية ويحتم عليك الحصول على التراخيص اللازمة.',
+          4,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
-            'فتح حساب بنكي تجاري',
-            'يفصل الحساب أموالك الشخصية عن أموال العمل ويسهل إدارة المعاملات المالية.',
-
-            5
+          'فتح حساب بنكي تجاري',
+          'يفصل الحساب أموالك الشخصية عن أموال العمل ويسهل إدارة المعاملات المالية.',
+          5,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
-            ' تأمين التأمين.',
-            'التأمين يحمي عملك من المخاطر المحتملة ويعزز ثقة العملاء في خدماتك.',
-
-            6
+          'تأمين التأمين.',
+          'التأمين يحمي عملك من المخاطر المحتملة ويعزز ثقة العملاء في خدماتك.',
+          6,
         ),
       ],
     );
   }
-
-
 
   Widget _buildTaskCard(String title, String description, int index) {
     return Container(
@@ -282,5 +313,4 @@ class _PlanningScreenState extends State<PlanningScreen> {
       ),
     );
   }
-
 }

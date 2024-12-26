@@ -5,7 +5,6 @@ import 'dart:io';
 import 'Activity.dart';
 import 'MyAccount.dart';
 import 'MyIdeas.dart';
-import 'MyInvestments.dart';
 import 'MyStartupProjects.dart';
 
 class PreviewIdeaScreen extends StatefulWidget {
@@ -114,22 +113,6 @@ class _PreviewIdeaScreenState extends State<PreviewIdeaScreen> {
                         color: Colors.transparent,
                       ),
                       child: Text('سجل النشاطات', style: TextStyle(color: Color(0xFF001F3F))),
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyInvestmentsScreen()),
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.transparent,
-                      ),
-                      child: Text('استثماراتي', style: TextStyle(color: Color(0xFF001F3F))),
                     ),
                   ),
                   InkWell(

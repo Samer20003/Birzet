@@ -34,29 +34,43 @@ class _StudyTheIdeaScreenState extends State<StudyTheIdeaScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20), // فراغ أعلى الشاشة
-            // شريط التقدم فوق الصورة
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Container(
-                    width: 500,  // عرض الشريط
-                    height: 20,  // ارتفاع الشريط
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // زوايا دائرية
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.grey[300],
-                        color: Colors.orangeAccent,
+            const SizedBox(height: 8), // فراغ بين العنوان والشريط
+            // شريط التقدم بمحاذاة اليسار
+            Align(
+              alignment: Alignment.topLeft, // محاذاة الشريط إلى أعلى اليسار
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0, left: 40.0), // تعديل المسافات
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // إضافة عنوان "مؤشر الإنجاز"
+                    Text(
+                      'مؤشر الإنجاز',
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                    const SizedBox(height: 8), // فراغ بين العنوان والشريط
+                    Container(
+                      width: 500, // طول الشريط
+                      height: 20,  // ارتفاع الشريط
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10), // زوايا دائرية
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.orangeAccent,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8), // فراغ بين الشريط والنسبة
-                  Text(
-                    '${(progress * 100).toStringAsFixed(0)}%', // النسبة تحت الشريط
-                    style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ],
+                    const SizedBox(height: 4), // فراغ بين الشريط والنسبة
+                    // عرض النسبة تحت الشريط
+                    Text(
+                      '${(progress * 100).toStringAsFixed(0)}%', // النسبة تحت الشريط
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20), // فراغ بين الشريط والصورة

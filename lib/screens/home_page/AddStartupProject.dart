@@ -41,6 +41,12 @@ class AddStartupProjectScreen extends StatelessWidget {
                 SizedBox(height: 10),
                 _buildLabeledTextField('ملخص عن المشروع', maxLines: 5, maxLength: 2000),
                 SizedBox(height: 10),
+
+                // إضافة خانة المرحلة الحالية للمشروع
+                Text('المرحلة الحالية للمشروع', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold)),
+                _buildStageDropdownField(),
+                SizedBox(height: 10),
+
                 _buildLabeledTextField('الإيميل'),
                 SizedBox(height: 10),
                 Text(
@@ -185,6 +191,37 @@ class AddStartupProjectScreen extends StatelessWidget {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value),
+              );
+            }).toList(),
+            onChanged: (value) {},
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStageDropdownField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(height: 8),
+        Container(
+          width: 700,
+          color: Colors.white, // تغيير لون الحقل الداخلي
+          child: DropdownButtonFormField<String>(
+            items: [
+              'مرحلة دراسة الفكرة',
+              'مرحلة التحقق والتخطيط',
+              'مرحلة التمويل والتأمين',
+              'مرحلة تأسيس الفريق والموارد',
+              'مرحلة الإطلاق والنمو',
+            ].map((String stage) {
+              return DropdownMenuItem<String>(
+                value: stage,
+                child: Text(stage),
               );
             }).toList(),
             onChanged: (value) {},

@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 
 import 'Activity.dart';
 import 'MyIdeas.dart';
-import 'MyInvestments.dart';
 import 'MyStartupProjects.dart';
 import 'navigation_bar/home_page_screen.dart';
 
@@ -124,15 +123,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                     child: _buildMenuItem('سجل النشاطات', null),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyInvestmentsScreen()),
-                      );
-                    },
-                    child: _buildMenuItem('استثماراتي', null),
                   ),
                   InkWell(
                     onTap: () {
