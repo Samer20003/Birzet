@@ -7,6 +7,7 @@ import 'Stage5.dart';
 import 'TeamFormationDetails.dart';
 
 class TeamFormationScreen extends StatefulWidget {
+
   const TeamFormationScreen({super.key});
 
   @override
@@ -14,11 +15,13 @@ class TeamFormationScreen extends StatefulWidget {
 }
 
 class _TeamFormationScreenState extends State<TeamFormationScreen> {
-
   final List<bool> _isChecked = [false, false, false];
+  int _completedTasks = 0;
 
   @override
   Widget build(BuildContext context) {
+    double progress = _completedTasks / _isChecked.length;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor, // استخدام اللون المخصص
@@ -32,14 +35,54 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 20), // فراغ أعلى الشاشة
+            const SizedBox(height: 8), // فراغ بين العنوان والشريط
+            // شريط التقدم بمحاذاة اليسار
+            Align(
+              alignment: Alignment.topLeft, // محاذاة الشريط إلى أعلى اليسار
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0, left: 40.0), // تعديل المسافات
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // إضافة عنوان "مؤشر الإنجاز"
+                    Text(
+                      'مؤشر الإنجاز',
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                    const SizedBox(height: 8), // فراغ بين العنوان والشريط
+                    Container(
+                      width: 500, // طول الشريط
+                      height: 20, // ارتفاع الشريط
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10), // زوايا دائرية
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4), // فراغ بين الشريط والنسبة
+                    // عرض النسبة تحت الشريط
+                    Text(
+                      '${(progress * 100).toStringAsFixed(0)}%', // النسبة تحت الشريط
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20), // فراغ بين الشريط والصورة
             _buildIdeaStudySection(), // إضافة قسم دراسة الفكرة
+            const SizedBox(height: 40), // فراغ في الأسفل
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildIdeaStudySection() {
     return Padding(
@@ -86,7 +129,7 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  iconColor:kPrimaryColor, // اللون البرتقالي
+                  iconColor: kPrimaryColor, // اللون البرتقالي
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20), // زوايا دائرية
                   ),
@@ -98,7 +141,6 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center, // توسيط الأزرار
                 children: [
-
                   ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
@@ -116,9 +158,7 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
                     icon: Icon(Icons.arrow_back, color: Colors.white), // رمز السهم إلى اليسار
                     label: Text('المرحلة التالية', style: TextStyle(color: Colors.white)),
                   ),
-
                   const SizedBox(width: 20), // مسافة بين الأزرار
-
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -142,7 +182,6 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
                       ],
                     ),
                   ),
-
                 ],
               ),
               const SizedBox(height: 10), // مسافة بين الأزرار
@@ -152,6 +191,7 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
       ),
     );
   }
+
   Widget _buildTaskCard(String title, String description, int index) {
     return Container(
       width: 500,
@@ -170,6 +210,7 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
                 onTap: () {
                   setState(() {
                     _isChecked[index] = !_isChecked[index];
+                    _completedTasks += _isChecked[index] ? 1 : -1; // Update completed tasks count
                   });
                 },
                 child: Icon(
@@ -196,5 +237,4 @@ class _TeamFormationScreenState extends State<TeamFormationScreen> {
       ),
     );
   }
-
 }

@@ -6,6 +6,7 @@ import 'IdeaStudyDetails.dart';
 import 'Stage2.dart';
 
 class StudyTheIdeaScreen extends StatefulWidget {
+
   const StudyTheIdeaScreen({super.key});
 
   @override

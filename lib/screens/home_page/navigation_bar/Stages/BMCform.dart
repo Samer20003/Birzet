@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../constants.dart'; // تأكد من استيراد ملف الثوابت
+import '../../../../constants.dart';
+import 'Stage2.dart'; // تأكد من استيراد ملف الثوابت
 
 class BMCformscreen extends StatelessWidget {
   @override
@@ -16,8 +17,64 @@ class BMCformscreen extends StatelessWidget {
             },
           ),
         ),
-        body: Center(
-          child: BusinessModelCanvas(),
+        body: Column(
+          children: [
+            // إضافة عنوان الصفحة هنا
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'نموذج العمل التجاري',
+                style: TextStyle(
+                  fontSize: 24, // حجم الخط
+                  fontWeight: FontWeight.bold, // جعل الخط عريض
+                  color: kPrimaryColor, // لون الخط
+                ),
+                textAlign: TextAlign.center, // محاذاة النص إلى الوسط
+              ),
+            ),
+            Expanded(
+              child: Center(
+                child: BusinessModelCanvas(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // توزيع الأزرار
+                children: [
+                  _buildActionButton(context, label: 'تنزيل', onPressed: () {
+                    // هنا يمكنك إضافة وظيفة زر التنزيل في المستقبل
+                  }),
+                  _buildActionButton(context, label: 'الرجوع لمرحلة التحقق والتخطيط', onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const PlanningScreen()),
+                    );
+                  }),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context, {required String label, required VoidCallback onPressed}) {
+    return Container(
+      width: 250,
+      decoration: BoxDecoration(
+        color: kPrimaryColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextButton(
+        onPressed: onPressed,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
         ),
       ),
     );

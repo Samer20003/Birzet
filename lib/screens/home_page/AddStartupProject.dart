@@ -64,10 +64,7 @@ class AddStartupProjectScreen extends StatelessWidget {
                       width: 150,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyStartupProjectsScreen()),
-                          );
+                          Navigator.pop(context); // Navigate back to the previous page
                         },
                         child: Text('إلغاء'),
                       ),

@@ -14,10 +14,13 @@ class PlanningScreen extends StatefulWidget {
 }
 
 class _PlanningScreenState extends State<PlanningScreen> {
-  final List<bool> _isChecked = List<bool>.filled(7, false);
+  final List<bool> _isChecked = List<bool>.filled(8, false);
+  int _completedTasks = 0;
 
   @override
   Widget build(BuildContext context) {
+    double progress = _completedTasks / _isChecked.length;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor,
@@ -31,8 +34,49 @@ class _PlanningScreenState extends State<PlanningScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 20), // فراغ أعلى الشاشة
+            const SizedBox(height: 8), // فراغ بين العنوان والشريط
+            // شريط التقدم بمحاذاة اليسار
+            Align(
+              alignment: Alignment.topLeft, // محاذاة الشريط إلى أعلى اليسار
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0, left: 40.0), // تعديل المسافات
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // إضافة عنوان "مؤشر الإنجاز"
+                    Text(
+                      'مؤشر الإنجاز',
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                    const SizedBox(height: 8), // فراغ بين العنوان والشريط
+                    Container(
+                      width: 500, // طول الشريط
+                      height: 20,  // ارتفاع الشريط
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10), // زوايا دائرية
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4), // فراغ بين الشريط والنسبة
+                    // عرض النسبة تحت الشريط
+                    Text(
+                      '${(progress * 100).toStringAsFixed(0)}%', // النسبة تحت الشريط
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20), // فراغ بين الشريط والصورة
             _buildIdeaStudySection(),
+            const SizedBox(height: 40), // فراغ في الأسفل
           ],
         ),
       ),
@@ -48,8 +92,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
         children: [
           // الصورة على اليسار
           Container(
-            width: 500, // Adjusted width for better layout
-            height: 500,
+            width: 250, // تحديد عرض الصورة
             child: Image.asset(
               'assets/images/Stage2.jpg',
               fit: BoxFit.cover, // ملاءمة الصورة
@@ -124,26 +167,8 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => StudyTheIdeaScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orangeAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        minimumSize: Size(150, 40),
-                      ),
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                      label: Text('المرحلة السابقة', style: TextStyle(color: Colors.white)),
-                    ),
-                    const SizedBox(width: 20),
                     ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -158,16 +183,43 @@ class _PlanningScreenState extends State<PlanningScreen> {
                         ),
                         minimumSize: Size(150, 40),
                       ),
-                      icon: Icon(Icons.arrow_forward, color: Colors.white),
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
                       label: Text('المرحلة التالية', style: TextStyle(color: Colors.white)),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => StudyTheIdeaScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        minimumSize: Size(150, 40),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('المرحلة السابقة', style: TextStyle(color: Colors.white)),
+                          const SizedBox(width: 8),
+                          Icon(Icons.arrow_forward, color: Colors.white),
+                        ],
+                      ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 10), // مسافة بين الأزرار
+
               ],
             ),
           ),
         ],
       ),
+
     );
   }
 
@@ -189,6 +241,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 onTap: () {
                   setState(() {
                     _isChecked[index] = !_isChecked[index];
+                    _completedTasks += _isChecked[index] ? 1 : -1; // Update completed tasks count
                   });
                 },
                 child: Icon(
@@ -239,31 +292,31 @@ class _PlanningScreenState extends State<PlanningScreen> {
         _buildTaskCard(
           'اختيار اسم لشركتك الناشئة؛',
           'يجب أن يكون الاسم فريدًا وسهل التذكر ويتوافق مع القوانين المحلية.',
-          2,
+          3,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
           'الحصول على رقم تعريف صاحب العمل',
           'يعد هذا ضروريًا لتوظيف الموظفين وفتح حسابات مصرفية تجارية ودفع الضرائب.',
-          3,
+          4,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
           'تسجيل عملك لدى الدولة',
           'تسجيل العمل يوفر لك الحماية القانونية ويحتم عليك الحصول على التراخيص اللازمة.',
-          4,
+          5,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
           'فتح حساب بنكي تجاري',
           'يفصل الحساب أموالك الشخصية عن أموال العمل ويسهل إدارة المعاملات المالية.',
-          5,
+          6,
         ),
         const SizedBox(height: 8),
         _buildTaskCard(
           'تأمين التأمين.',
           'التأمين يحمي عملك من المخاطر المحتملة ويعزز ثقة العملاء في خدماتك.',
-          6,
+          7,
         ),
       ],
     );
@@ -287,6 +340,7 @@ class _PlanningScreenState extends State<PlanningScreen> {
                 onTap: () {
                   setState(() {
                     _isChecked[index] = !_isChecked[index];
+                    _completedTasks += _isChecked[index] ? 1 : -1; // Update completed tasks count
                   });
                 },
                 child: Icon(

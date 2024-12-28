@@ -69,15 +69,16 @@ class CreateBusinessPlanScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start, // Align buttons to the left
               children: [
+                _buildCancelButton(context), // Cancel button
+                SizedBox(width: 16), // Add space between the buttons
                 _buildActionButton(context, label: 'تحويل الى خطة العمل', onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => BMCformscreen()),
                   );
                 }),
-                _buildActionButton(context, label: 'حفظ', onPressed: () {  }),
               ],
             ),
           ],
@@ -126,6 +127,28 @@ class CreateBusinessPlanScreen extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           label,
+          style: GoogleFonts.cairo(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCancelButton(BuildContext context) {
+    return Container(
+      width: 200,
+      decoration: BoxDecoration(
+        color: Colors.red, // Use red color for cancel button
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: TextButton(
+        onPressed: () {
+          Navigator.pop(context); // Navigate back to the previous page
+        },
+        child: Text(
+          'إلغاء',
           style: GoogleFonts.cairo(
             color: Colors.white,
             fontSize: 16,

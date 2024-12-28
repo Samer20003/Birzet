@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../../constants.dart';
 import 'FinancingDetails.dart';
 import 'IdeaStudyDetails.dart';
@@ -15,11 +14,13 @@ class FinancingScreen extends StatefulWidget {
 }
 
 class _FinancingScreenState extends State<FinancingScreen> {
-
   final List<bool> _isChecked = List<bool>.filled(7, false);
+  int _completedTasks = 0;
 
   @override
   Widget build(BuildContext context) {
+    double progress = _completedTasks / _isChecked.length;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kPrimaryColor, // استخدام اللون المخصص
@@ -33,8 +34,49 @@ class _FinancingScreenState extends State<FinancingScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 40),
+            const SizedBox(height: 20), // فراغ أعلى الشاشة
+            const SizedBox(height: 8), // فراغ بين العنوان والشريط
+            // شريط التقدم بمحاذاة اليسار
+            Align(
+              alignment: Alignment.topLeft, // محاذاة الشريط إلى أعلى اليسار
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0, left: 40.0), // تعديل المسافات
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // إضافة عنوان "مؤشر الإنجاز"
+                    Text(
+                      'مؤشر الإنجاز',
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                    const SizedBox(height: 8), // فراغ بين العنوان والشريط
+                    Container(
+                      width: 500, // طول الشريط
+                      height: 20,  // ارتفاع الشريط
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10), // زوايا دائرية
+                        child: LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[300],
+                          color: Colors.orangeAccent,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4), // فراغ بين الشريط والنسبة
+                    // عرض النسبة تحت الشريط
+                    Text(
+                      '${(progress * 100).toStringAsFixed(0)}%', // النسبة تحت الشريط
+                      style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.right,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20), // فراغ بين الشريط والصورة
             _buildIdeaStudySection(), // إضافة قسم دراسة الفكرة
+            const SizedBox(height: 40), // فراغ في الأسفل
           ],
         ),
       ),
@@ -69,50 +111,41 @@ class _FinancingScreenState extends State<FinancingScreen> {
                 style: GoogleFonts.poppins(fontSize: 24),
               ),
               const SizedBox(height: 8),
-
-              // New text added here
               Text(
                 'اتخاذ قرار بشأن تمويل مشروعك الناشئ -',
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold), // Largest font
+                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.right,
               ),
               const SizedBox(height: 8),
-
               _buildTaskCard('تحديد تمويل المشروع', 'اتخاذ قرار بشأن كيفية تمويل المشروع، سواء من خلال مستثمرين أو قروض..', 0),
               const SizedBox(height: 8),
-              _buildTaskCard('جذب المستثمرين ', 'عرض تقديمي مثير للإعجاب يتضمن المشكلة التي يحلها عملك، وكيف يكون الحل الذي تقدمه فريدًا، وكيف تخطط لكسب المال، ومقدار التمويل الذي تحتاجه بالضبط ولماذا، وكيف سيحصل المستثمرون على عائد على استثماراتهم.', 1),
+              _buildTaskCard('جذب المستثمرين', 'عرض تقديمي مثير للإعجاب يتضمن المشكلة التي يحلها عملك، وكيف يكون الحل الذي تقدمه فريدًا، وكيف تخطط لكسب المال، ومقدار التمويل الذي تحتاجه بالضبط ولماذا، وكيف سيحصل المستثمرون على عائد على استثماراتهم.', 1),
               const SizedBox(height: 8),
-
-              // Existing section for budget plan
               Column(
-                crossAxisAlignment: CrossAxisAlignment.end, // Align text to the right
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     'انشاء خطة الميزانية -',
-                    style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold), // Largest font
+                    style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.right,
                   ),
                   const SizedBox(height: 4), // Space between lines
                   Text(
                     'لكي تتمكن من التخطيط لأنشطتك المستقبلية بشكل فعال',
-                    style: GoogleFonts.poppins(fontSize: 20), // Medium font size
+                    style: GoogleFonts.poppins(fontSize: 20),
                     textAlign: TextAlign.right,
                   ),
                   const SizedBox(height: 4), // Space between lines
                   Text(
                     'اتبع الخطوات التالية لإنشاء خطة مالية واقعية',
-                    style: GoogleFonts.poppins(fontSize: 16), // Smallest font size
+                    style: GoogleFonts.poppins(fontSize: 16),
                     textAlign: TextAlign.right,
                   ),
                 ],
               ),
               const SizedBox(height: 15),
-
-              // Call to the checklist method
-              _buildChecklist(),
-
+              _buildChecklist(), // Call to the checklist method
               const SizedBox(height: 20),
-              // Button for additional information
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -187,43 +220,19 @@ class _FinancingScreenState extends State<FinancingScreen> {
   Widget _buildChecklist() {
     return Column(
       children: [
-        _buildTaskCard(
-            'التكاليف', // Add a description here
-            'تقدير التكاليف الأولية، مثل الرسوم القانونية، والإيجار، والمرافق، وتكاليف إعداد أنظمة تكنولوجيا المعلومات، وتطوير المنتجات، والتسويق',
-
-            2
-        ),
+        _buildTaskCard('التكاليف', 'تقدير التكاليف الأولية، مثل الرسوم القانونية، والإيجار، والمرافق، وتكاليف إعداد أنظمة تكنولوجيا المعلومات، وتطوير المنتجات، والتسويق', 2),
         const SizedBox(height: 8),
-        _buildTaskCard(
-            ' مصاريف التشغيل',
-            'مصاريف تشغيل المشروع، بما في ذلك رواتب الموظفين والمدفوعات مقابل الخدمات الخارجية، بالإضافة إلى التكاليف المستمرة للحفاظ على استمرارية عملك',
-
-            3
-        ),
+        _buildTaskCard('مصاريف التشغيل', 'مصاريف تشغيل المشروع، بما في ذلك رواتب الموظفين والمدفوعات مقابل الخدمات الخارجية، بالإضافة إلى التكاليف المستمرة للحفاظ على استمرارية عملك', 3),
         const SizedBox(height: 8),
-        _buildTaskCard(
-            'الإيرادات',
-            'توقع الإيرادات. استخدم أبحاث السوق الخاصة بك لتكوين تخمين مدروس حول المبيعات المستقبلية',
-
-            4
-        ),
+        _buildTaskCard('الإيرادات', 'توقع الإيرادات. استخدم أبحاث السوق الخاصة بك لتكوين تخمين مدروس حول المبيعات المستقبلية', 4),
         const SizedBox(height: 8),
-        _buildTaskCard(
-            'البيانات المالية',
-            'إنشاء البيانات المالية، بما في ذلك بيان الدخل، والميزانية العمومية، وبيان التدفق النقدي',
-
-            5
-        ),
+        _buildTaskCard('البيانات المالية', 'إنشاء البيانات المالية، بما في ذلك بيان الدخل، والميزانية العمومية، وبيان التدفق النقدي', 5),
         const SizedBox(height: 8),
-        _buildTaskCard(
-            ' صندوق الطوارئ',
-            'من المستحسن أن تدرج في ميزانيتك صندوق طوارئ بنسبة تتراوح بين 10% إلى 20%',
-
-            6
-        ),
+        _buildTaskCard('صندوق الطوارئ', 'من المستحسن أن تدرج في ميزانيتك صندوق طوارئ بنسبة تتراوح بين 10% إلى 20%', 6),
       ],
     );
   }
+
   Widget _buildTaskCard(String title, String description, int index) {
     return Container(
       width: 500,
@@ -242,6 +251,7 @@ class _FinancingScreenState extends State<FinancingScreen> {
                 onTap: () {
                   setState(() {
                     _isChecked[index] = !_isChecked[index];
+                    _completedTasks += _isChecked[index] ? 1 : -1; // Update completed tasks count
                   });
                 },
                 child: Icon(
@@ -268,5 +278,4 @@ class _FinancingScreenState extends State<FinancingScreen> {
       ),
     );
   }
-
 }

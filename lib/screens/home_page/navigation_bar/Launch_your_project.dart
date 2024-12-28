@@ -198,7 +198,6 @@ class _LaunchProjectScreenState extends State<LaunchProjectScreen> {
               const Spacer(),
               Row(
                 children: [
-                  // تواصل معنا
                   MouseRegion(
                     onEnter: (_) => setState(() {
                       _isHoveringContact = true;
@@ -258,7 +257,6 @@ class _LaunchProjectScreenState extends State<LaunchProjectScreen> {
                     }),
                   ),
                   const SizedBox(width: 16),
-                  // حاضنة ستارت أب
                   MouseRegion(
                     onEnter: (_) => setState(() {
                       _isHoveringIncubator = true;
@@ -400,17 +398,15 @@ class _LaunchProjectScreenState extends State<LaunchProjectScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'ستساعدك حاضنة  ستارت أب على إطلاق مشروعك الناشئ وتسير معك خطوة بخطوة، وتقدم لك الإرشاد عند الحاجة. إن كانت لديك فكرة مشروع ناشئ لا تنتظر، ابدأ رحلة الاحتضان الآن.',
+            'ستساعدك حاضنة ستارت أب على إطلاق مشروعك الناشئ وتسير معك خطوة بخطوة، وتقدم لك الإرشاد عند الحاجة. إن كانت لديك فكرة مشروع ناشئ لا تنتظر، ابدأ رحلة الاحتضان الآن.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-
               fontSize: 16,
               color: Colors.black,
             ),
           ),
           const SizedBox(height: 20),
-          // تقليل عرض الزر
           SizedBox(
             width: 200,
             child: ElevatedButton(
@@ -473,8 +469,6 @@ class _LaunchProjectScreenState extends State<LaunchProjectScreen> {
             ),
           ),
           const SizedBox(height: 20),
-
-          // أزرار التواصل الاجتماعي
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -522,17 +516,14 @@ class _LaunchProjectScreenState extends State<LaunchProjectScreen> {
     });
   }
 }
+
 class ProjectFormScreen extends StatefulWidget {
   @override
   _ProjectFormScreenState createState() => _ProjectFormScreenState();
 }
 
 class _ProjectFormScreenState extends State<ProjectFormScreen> {
-  final _formKey = GlobalKey<FormState>();
-  String? _projectName;
-  String? _projectDescription;
-  String? _projectField;
-  String? _projectStage;
+  String? _selectedStage; // لتخزين المرحلة المحددة
 
   final List<String> stages = [
     'مرحلة دراسة الفكرة',
@@ -553,7 +544,7 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Container(
-            width: 700, // عرض المستطيل الكبير
+            width: 700,
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -567,55 +558,38 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
                 ),
               ],
             ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end, // محاذاة للنصوص لليمين
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight, // محاذاة العنوان لليمين
-                    child: Text(
-                      'معلومات المشروع',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF0A1D47),
-                      ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'اختر المرحلة الحالية لمشروعك',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF0A1D47),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  _buildTextField('اسم المشروع', (value) {
-                    _projectName = value;
-                  }),
-                  const SizedBox(height: 10),
-                  _buildTextField('وصف المشروع', (value) {
-                    _projectDescription = value;
-                  }),
-                  const SizedBox(height: 10),
-                  _buildTextField('مجال المشروع', (value) {
-                    _projectField = value;
-                  }),
-                  const SizedBox(height: 10),
-                  _buildDropdownField(),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        // هنا يمكنك إضافة المنطق لإرسال البيانات أو حفظها
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('تم إرسال النموذج بنجاح')),
-                        );
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FirstStepOfJourneyScreen()),
-                      );
-
-                    },
-                    child: const Text('التالي'),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                ..._buildStageOptions(), // عرض المراحل
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _selectedStage != null
+                      ? () {
+                    // الانتقال إلى الصفحة الخاصة بالمرحلة المحددة
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FirstStepOfJourneyScreen(), // قم بتعديلها حسب المرحلة
+                      ),
+                    );
+                  }
+                      : null, // تعطيل الزر إذا لم يتم اختيار مرحلة
+                  child: const Text('التالي'),
+                ),
+              ],
             ),
           ),
         ),
@@ -623,80 +597,45 @@ class _ProjectFormScreenState extends State<ProjectFormScreen> {
     );
   }
 
-  Widget _buildTextField(String label, Function(String) onChanged) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end, // توزيع العناصر لليمين
-      children: [
-        Expanded(
-          flex: 2,
-          child: TextFormField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(vertical: 12),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'يرجى إدخال $label';
-              }
-              return null;
-            },
-            onChanged: onChanged,
-          ),
-        ),
-        const SizedBox(width: 10), // مسافة بين المستطيل والعنوان
-        Expanded(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.centerRight, // محاذاة النص على اليمين
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  List<Widget> _buildStageOptions() {
+    return stages.asMap().entries.map((entry) {
+      int index = entry.key;
+      String stage = entry.value;
+      String stageLabel = 'المرحلة ${index + 1}: '; // إضافة جملة المرحلة
 
-  Widget _buildDropdownField() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end, // توزيع العناصر لليمين
-      children: [
-        Expanded(
-          flex: 2,
-          child: DropdownButtonFormField<String>(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-            ),
-            items: stages.map((String stage) {
-              return DropdownMenuItem<String>(
-                value: stage,
-                child: Text(stage),
-              );
-            }).toList(),
-            onChanged: (value) {
-              _projectStage = value;
-            },
-            validator: (value) {
-              if (value == null) {
-                return 'يرجى اختيار المرحلة الحالية';
-              }
-              return null;
-            },
-          ),
-        ),
-        const SizedBox(width: 10), // مسافة بين المستطيل والعنوان
-        Expanded(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.centerRight, // محاذاة النص على اليمين
-            child: Text(
-              'المرحلة الحالية',
-              style: TextStyle(fontSize: 16),
+      return GestureDetector(
+        onTap: () {
+          setState(() {
+            _selectedStage = stage; // تحديد المرحلة عند الضغط
+          });
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          padding: const EdgeInsets.all(10.0),
+          decoration: BoxDecoration(
+            color: _selectedStage == stage ? Colors.green[100] : Colors.white, // تغيير اللون عند الاختيار
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: _selectedStage == stage ? Colors.green : Colors.grey,
+              width: 1,
             ),
           ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end, // محاذاة العناصر لليمين
+            children: [
+              Text(
+                '$stageLabel$stage', // النص مع جملة المرحلة
+                style: GoogleFonts.poppins(fontSize: 18),
+              ),
+              const SizedBox(width: 10),
+              CircleAvatar(
+                radius: 12,
+                backgroundColor: _selectedStage == stage ? Colors.green : Colors.grey[300],
+              ),
+            ],
+          ),
         ),
-      ],
-    );
+      );
+    }).toList();
   }
 }
