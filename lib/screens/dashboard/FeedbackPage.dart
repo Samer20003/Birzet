@@ -142,7 +142,6 @@ class _FeedbackTableState extends State<FeedbackTable> {
                 DataColumn(label: Text("اسم المستخدم", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("البريد الإلكتروني", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("التاريخ", style: TextStyle(color: Colors.white))),
-                DataColumn(label: Text("التقييم", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("الملاحظات", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("الإجراءات", style: TextStyle(color: Colors.white))),
               ],

@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+    id "com.google.gms.google-services"
 }
 android {
     namespace = "com.example.ggg_hhh"
@@ -23,10 +24,11 @@ android {
         applicationId = "com.example.ggg_hhh"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdkVersion 21 // تأكد من توافقه مع متطلبات Firebase
+        targetSdkVersion 30 // تأكد من توافقه مع متطلبات Firebase
+        versionCode 2 // زيادة الرقم عند كل إصدار
+        versionName "1.0.1" // تحديث رقم الإصدار
+
     }
 
     buildTypes {

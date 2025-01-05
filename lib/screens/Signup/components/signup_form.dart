@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
-import '../../home_page/navigation_bar/home_page_screen.dart';
+import '../../users/homepageUsers/HomePageScreenUsers.dart';
 import 'package:http/http.dart' as http;
 
 class SignUpForm extends StatefulWidget {
