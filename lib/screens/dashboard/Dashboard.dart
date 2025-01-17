@@ -3,6 +3,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'ActiveUsersTable.dart';
 import 'Courses.dart';
 import 'FeedbackPage.dart';
+import 'Grants.dart';
 import 'IdeasPage.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
@@ -36,6 +37,8 @@ class DashboardPage extends StatelessWidget {
           _buildMenuItem(context, "طلبات المستخدمين", UserRequest()),
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
+          _buildMenuItem(context, "المنح", Grantpage()),
+
         ],
       ),
     );

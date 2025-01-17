@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:ggg_hhh/constants.dart';
+import 'package:ggg_hhh/screens/Welcome/welcome_screen.dart';
 import 'package:ggg_hhh/screens/dashboard/Dashboard.dart';
 import 'package:ggg_hhh/screens/investor/homepageinvestor/HomePageScreeninvestor.dart';
 import 'package:ggg_hhh/screens/users/homepageUsers/HomePageScreenUsers.dart';
-import 'package:ggg_hhh/screens/users/navigation_bar/MyInformation/MyAccount.dart';
-import 'package:ggg_hhh/screens/users/navigation_bar/MyInformation/MyStartupProjects/PreviewProject.dart';
 
 void main() => runApp(const MyApp());
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           )),
-      home: HomePageScreeninvestor(),
+      home: DashboardPage(),
     );
   }
 }

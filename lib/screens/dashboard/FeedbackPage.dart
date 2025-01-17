@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'ActiveUsersTable.dart';
 import 'Courses.dart';
 import 'Dashboard.dart';
+import 'Grants.dart';
 import 'IdeasPage.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
@@ -36,6 +37,7 @@ class FeedbackPage extends StatelessWidget {
           _buildMenuItem(context, "طلبات المستخدمين", UserRequest()),
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
+          _buildMenuItem(context, "المنح", Grantpage()),
         ],
       ),
     );
@@ -119,7 +121,13 @@ class FeedbackTable extends StatefulWidget {
 }
 
 class _FeedbackTableState extends State<FeedbackTable> {
-  List<bool> _isNoteOpen = [false, false, false]; // مصفوفة لتتبع حالة الفتح لكل ملاحظة
+  List<Map<String, String>> _feedbackList = [
+    {"username": "مستخدم 1", "email": "user1@example.com", "date": "2024-12-01", "notes": "ملاحظات مفيدة"},
+    {"username": "مستخدم 2", "email": "user2@example.com", "date": "2024-12-02", "notes": "تجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربةتجربة جيدة"},
+    {"username": "مستخدم 3", "email": "user3@example.com", "date": "2024-12-03", "notes": "يمكن تحسين الخدمة"},
+  ];
+
+  List<bool> _isNoteOpen = [false, false, false]; // لتتبع حالة الفتح لكل ملاحظة
 
   @override
   Widget build(BuildContext context) {
@@ -142,14 +150,52 @@ class _FeedbackTableState extends State<FeedbackTable> {
                 DataColumn(label: Text("اسم المستخدم", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("البريد الإلكتروني", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("التاريخ", style: TextStyle(color: Colors.white))),
-                DataColumn(label: Text("الملاحظات", style: TextStyle(color: Colors.white))),
+                DataColumn(label: Text("الفيدباك", style: TextStyle(color: Colors.white))),
                 DataColumn(label: Text("الإجراءات", style: TextStyle(color: Colors.white))),
               ],
-              rows: [
-                _createRow(0, "مستخدم 1", "user1@example.com", "2024-12-01", 5, "ملاحظات مفيدة"),
-                _createRow(1, "مستخدم 2", "user2@example.com", "2024-12-02", 4, "تجربة جيدة"),
-                _createRow(2, "مستخدم 3", "", "2024-12-03", 3, "يمكن تحسين الخدمة"),
-              ],
+              rows: _feedbackList.asMap().entries.map((entry) {
+                int index = entry.key;
+                Map<String, String> feedback = entry.value;
+
+                return DataRow(cells: [
+                  DataCell(Text(feedback["username"]!, style: TextStyle(color: Colors.white))),
+                  DataCell(Text(feedback["email"]!, style: TextStyle(color: Colors.white))),
+                  DataCell(Text(feedback["date"]!, style: TextStyle(color: Colors.white))),
+                  DataCell(
+                    Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isNoteOpen[index] = !_isNoteOpen[index];
+                            });
+                            if (_isNoteOpen[index]) {
+                              _showNoteDialog(context, feedback["username"]!, feedback["notes"]!);
+                            }
+                          },
+                          child: Text(
+                            "فيدباك",
+                            style: TextStyle(
+                              color: _isNoteOpen[index] ? Colors.green : Colors.red,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          _feedbackList.removeAt(index);
+                        });
+                      },
+                    ),
+                  ),
+                ]);
+              }).toList(),
             ),
           ),
         ),
@@ -157,61 +203,33 @@ class _FeedbackTableState extends State<FeedbackTable> {
     );
   }
 
-  DataRow _createRow(int index, String username, String email, String date, int rating, String notes) {
-    return DataRow(cells: [
-      DataCell(Text(username, style: TextStyle(color: Colors.white))),
-      DataCell(Text(email, style: TextStyle(color: Colors.white))),
-      DataCell(Text(date, style: TextStyle(color: Colors.white))),
-      DataCell(Text(rating.toString(), style: TextStyle(color: Colors.white))),
-      DataCell(
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              _isNoteOpen[index] = !_isNoteOpen[index];
-            });
-            _showNoteDialog(context, username, notes);
-          },
-          child: Text(
-            "ملاحظة",
-            style: TextStyle(
-              color: _isNoteOpen[index] ? Colors.green : Colors.red,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ),
-      ),
-      DataCell(
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.edit, color: Colors.white),
-              onPressed: () {
-                // إضافة منطق التعديل هنا
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                // إضافة منطق الحذف هنا
-              },
-            ),
-          ],
-        ),
-      ),
-    ]);
-  }
-
   void _showNoteDialog(BuildContext context, String username, String note) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFFE0E0E0), // لون خلفية الصندوق
-          title: Text("ملاحظة من $username"),
-          content: Text(note),
+          backgroundColor: Color(0xFF1C1C1C), // لون خلفية الصندوق من مشتقات الأسود
+          title: Text(
+            "فيدباك من $username",
+            style: TextStyle(color: Colors.white), // تغيير لون الخط إلى الأبيض
+          ),
+          content: Container(
+            decoration: BoxDecoration(
+              color: Color(0xFF2B2B2B), // لون خلفية الصندوق
+              borderRadius: BorderRadius.circular(8), // زوايا مدورة
+            ),
+            padding: EdgeInsets.all(16.0), // إضافة حشوة داخلية
+            child: Text(
+              note,
+              style: TextStyle(color: Colors.white), // تغيير لون الخط إلى الأبيض
+            ),
+          ),
           actions: [
             TextButton(
-              child: Text("إغلاق"),
+              child: Text(
+                "إغلاق",
+                style: TextStyle(color: Colors.white), // تغيير لون الخط إلى الأبيض
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // إغلاق الصندوق
               },

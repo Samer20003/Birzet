@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'ActiveUsersTable.dart';
 import 'Dashboard.dart';
 import 'FeedbackPage.dart';
+import 'Grants.dart';
 import 'IdeasPage.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
 import 'UsersPage.dart';
 
-class Courses extends StatelessWidget {
+class Courses extends StatefulWidget {
+  @override
+  _CoursesState createState() => _CoursesState();
+}
+
+class _CoursesState extends State<Courses> {
+  List<Map<String, String>> courses = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF2B2B2B), // تغيير لون الخلفية هنا
+      backgroundColor: Color(0xFF2B2B2B),
       body: Row(
         children: [
           _buildSidebar(context),
@@ -36,6 +44,7 @@ class Courses extends StatelessWidget {
           _buildMenuItem(context, "طلبات المستخدمين", UserRequest()),
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
+          _buildMenuItem(context, "المنح", Grantpage()),
         ],
       ),
     );
@@ -61,7 +70,9 @@ class Courses extends StatelessWidget {
       children: [
         _buildHeader(),
         SizedBox(height: 20),
-        Expanded(child: _buildCoursesTable(context)), // عرض جدول الدورات
+        _buildAddCourseButton(context), // زر إضافة دورة
+        SizedBox(height: 20),
+        Expanded(child: _buildCoursesTable(context)),
       ],
     );
   }
@@ -110,6 +121,166 @@ class Courses extends StatelessWidget {
       ),
     );
   }
+  Widget _buildAddCourseButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 16.0), // مسافة بين الزر والحافة اليمنى
+        child: GestureDetector(
+          onTap: () {
+            _showAddCourseDialog(context);
+          },
+          child: Container(
+            width: 120, // عرض الزر
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              color: Colors.blueAccent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                "إضافة دورة",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAddCourseDialog(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
+    final TextEditingController descriptionController = TextEditingController();
+    final TextEditingController startDateController = TextEditingController();
+    final TextEditingController endDateController = TextEditingController();
+    final TextEditingController instructorController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("إضافة دورة جديدة", style: TextStyle(color: Colors.white)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15), // تقليل زوايا المستطيل
+          ),
+          backgroundColor: Color(0xFF3A3A3A), // لون خلفية الفورم
+          content: SingleChildScrollView(
+            child: Container(
+              width: 400, // زيادة عرض الفورم
+              child: Column(
+                children: [
+                  TextField(
+                    controller: nameController,
+                    style: TextStyle(color: Colors.white), // لون النص
+                    decoration: InputDecoration(
+                      hintText: "اسم الدورة",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF4A4A4A), // لون خلفية الحقول
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: descriptionController,
+                    style: TextStyle(color: Colors.white), // لون النص
+                    decoration: InputDecoration(
+                      hintText: "الوصف",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF4A4A4A),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: startDateController,
+                    style: TextStyle(color: Colors.white), // لون النص
+                    decoration: InputDecoration(
+                      hintText: "تاريخ البدء",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF4A4A4A),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: endDateController,
+                    style: TextStyle(color: Colors.white), // لون النص
+                    decoration: InputDecoration(
+                      hintText: "تاريخ الانتهاء",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF4A4A4A),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: instructorController,
+                    style: TextStyle(color: Colors.white), // لون النص
+                    decoration: InputDecoration(
+                      hintText: "اسم المدرب",
+                      hintStyle: TextStyle(color: Colors.white54),
+                      filled: true,
+                      fillColor: Color(0xFF4A4A4A),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("إلغاء", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("إضافة", style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                setState(() {
+                  courses.add({
+                    'name': nameController.text,
+                    'description': descriptionController.text,
+                    'start_date': startDateController.text,
+                    'end_date': endDateController.text,
+                    'instructor': instructorController.text,
+                    'participants': '0', // يمكن تعديل هذا حسب الحاجة
+                  });
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Widget _buildCoursesTable(BuildContext context) {
     return SingleChildScrollView(
@@ -123,14 +294,14 @@ class Courses extends StatelessWidget {
           DataColumn(label: Text('عدد المشاركين', style: TextStyle(color: Colors.white))),
           DataColumn(label: Text('الإجراءات', style: TextStyle(color: Colors.white))),
         ],
-        rows: [
-          DataRow(cells: [
-            DataCell(Text('دورة Flutter', style: TextStyle(color: Colors.white))),
-            DataCell(Text('دورة شاملة لتعلم فلاتر', style: TextStyle(color: Colors.white))),
-            DataCell(Text('01/01/2024', style: TextStyle(color: Colors.white))),
-            DataCell(Text('30/01/2024', style: TextStyle(color: Colors.white))),
-            DataCell(Text('أحمد محمد', style: TextStyle(color: Colors.white))),
-            DataCell(Text('25', style: TextStyle(color: Colors.white))),
+        rows: courses.map<DataRow>((course) {
+          return DataRow(cells: [
+            DataCell(Text(course['name']!, style: TextStyle(color: Colors.white))),
+            DataCell(Text(course['description']!, style: TextStyle(color: Colors.white))),
+            DataCell(Text(course['start_date']!, style: TextStyle(color: Colors.white))),
+            DataCell(Text(course['end_date']!, style: TextStyle(color: Colors.white))),
+            DataCell(Text(course['instructor']!, style: TextStyle(color: Colors.white))),
+            DataCell(Text(course['participants']!, style: TextStyle(color: Colors.white))),
             DataCell(Row(
               children: [
                 IconButton(
@@ -153,9 +324,8 @@ class Courses extends StatelessWidget {
                 ),
               ],
             )),
-          ]),
-          // يمكن إضافة المزيد من الصفوف هنا حسب الحاجة
-        ],
+          ]);
+        }).toList(),
       ),
     );
   }

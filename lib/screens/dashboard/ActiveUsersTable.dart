@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'Courses.dart';
 import 'Dashboard.dart';
 import 'FeedbackPage.dart';
+import 'Grants.dart';
 import 'IdeasPage.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
@@ -36,6 +37,8 @@ class ActiveUsers extends StatelessWidget {
           _buildMenuItem(context, "طلبات المستخدمين", UserRequest()),
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
+          _buildMenuItem(context, "المنح", Grantpage()),
+
         ],
       ),
     );
