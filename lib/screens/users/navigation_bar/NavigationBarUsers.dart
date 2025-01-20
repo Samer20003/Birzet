@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../ContactUs/AIChat.dart';
 import '../../ContactUs/Chat.dart';
+import '../../MessagesScreen.dart';
+import '../../NotificationsScreen.dart';
 import '../../Success_stories/Success_stories.dart';
 import '../../WhoWeAre/WhoWeAre.dart';
 import '../Feedback/Feedback.dart';
@@ -40,9 +42,19 @@ class NavigationBarUsers extends StatelessWidget {
                     onPressed: () => scaffoldKey.currentState?.openDrawer(),
                   ),
                   const SizedBox(width: 16),
-                  _buildPopupMenuButton(context, Icons.notifications, _buildNotificationsList),
+                  IconButton(
+                    icon: Icon(Icons.notifications),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsScreen()));
+                    },
+                  ),
                   const SizedBox(width: 16),
-                  _buildPopupMenuButton(context, Icons.messenger, _buildMessagesList),
+                  IconButton(
+                    icon: Icon(Icons.messenger),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MessagesScreen()));
+                    },
+                  ),
                 ],
               ),
               const Spacer(),
@@ -107,197 +119,6 @@ class NavigationBarUsers extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPopupMenuButton(BuildContext context, IconData icon, Widget Function(BuildContext) itemBuilder) {
-    return PopupMenuButton(
-      icon: Icon(icon),
-      itemBuilder: (BuildContext context) {
-        return [
-          PopupMenuItem(
-            child: itemBuilder(context),
-          ),
-        ];
-      },
-    );
-  }
-
-  Widget _buildMessagesList(BuildContext context) {
-    List<Map<String, String>> messages = [
-      {
-        'userName': 'أحمد',
-        'userImage': 'assets/images/defaultpfp.jpg',
-        'message': 'كيف حالك؟',
-        'time': '10:30 AM',
-      },
-      {
-        'userName': 'سارة',
-        'userImage': 'assets/images/defaultpfp.jpg',
-        'message': 'هل تريد الذهاب إلى السينما؟',
-        'time': '9:15 AM',
-      },
-      {
-        'userName': 'محمد',
-        'userImage': 'assets/images/defaultpfp.jpg',
-        'message': 'أحتاج مساعدتك في المشروع.',
-        'time': 'Yesterday',
-      },
-      {
-        'userName': 'ليلى',
-        'userImage': 'assets/images/defaultpfp.jpg',
-        'message': 'هل رأيت آخر الأخبار؟',
-        'time': '2 days ago',
-      },
-      {
-        'userName': 'عامر',
-        'userImage': 'assets/images/defaultpfp.jpg',
-        'message': ' الأخبار؟',
-        'time': '5 days ago',
-      },
-    ];
-
-    return Container(
-      width: 250,
-      height: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'الرسائل',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          SizedBox(height: 8),
-          Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return _buildMessageItem(
-                  messages[index]['userName']!,
-                  messages[index]['userImage']!,
-                  messages[index]['message']!,
-                  messages[index]['time']!,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationsList(BuildContext context) {
-    List<Map<String, String>> notifications = [
-      {
-        'title': 'إشعار 1',
-        'message': 'هذا هو نص الإشعار الأول.',
-      },
-      {
-        'title': 'إشعار 2',
-        'message': 'هذا هو نص الإشعار الثاني.',
-      },
-      {
-        'title': 'إشعار 3',
-        'message': 'هذا هو نص الإشعار الثالث.',
-      },
-    ];
-
-    return Container(
-      width: 250,
-      height: 200,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'الإشعارات',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          SizedBox(height: 8),
-          Expanded(
-            child: ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                return _buildNotificationItem(
-                  notifications[index]['title']!,
-                  notifications[index]['message']!,
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNotificationItem(String title, String message) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Color(0xFFF0F0F0),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.black),
-            ),
-            SizedBox(height: 4),
-            Text(
-              message,
-              style: TextStyle(fontSize: 12, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMessageItem(String userName, String userImage, String message, String time) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: AssetImage(userImage),
-            radius: 16,
-          ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    userName,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.black),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    message,
-                    style: TextStyle(fontSize: 12, color: Colors.black),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    time,
-                    style: TextStyle(color: Colors.grey, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
           ),
         ],
       ),

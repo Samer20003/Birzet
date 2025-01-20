@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../Welcome/welcome_screen.dart';
-import '../MyInformation/Activity.dart';
 import '../MyInformation/MyAccount.dart';
 import '../MyInformation/MyIdeas/MyIdeas.dart';
 import '../MyInformation/MyStartupProjects/thebeginning.dart';
@@ -37,12 +36,6 @@ class DrawerUsers extends StatelessWidget {
             title: const Text('افكاري'),
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => MyIdeasScreen()));
-            },
-          ),
-          ListTile(
-            title: const Text('سجل النشاطات'),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityScreen()));
             },
           ),
           ListTile(

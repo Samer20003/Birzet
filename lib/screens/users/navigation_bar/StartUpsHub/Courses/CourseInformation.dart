@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
 import '../../../../../constants.dart';
 import '../../../../ChatForInquiries/ChatForInquiries.dart';
-import '../MyAccount.dart';
-import 'MyIdeas.dart';
-import '../MyStartupProjects/MyStartupProjects.dart';
+import '../../../../basic/footer.dart';
+import '../../../../basic/header.dart';
+import '../../DrawerUsers/DrawerUsers.dart';
+import '../../NavigationBarUsers.dart';
 
-class PreviewIdeaScreen extends StatefulWidget {
+class CourseInformationScreen extends StatefulWidget {
   @override
-  _PreviewIdeaScreenState createState() => _PreviewIdeaScreenState();
+  _CourseInformationScreenState createState() => _CourseInformationScreenState();
 }
 
-class _PreviewIdeaScreenState extends State<PreviewIdeaScreen> {
-
+class _CourseInformationScreenState extends State<CourseInformationScreen> {
   final List<Map<String, dynamic>> _comments = [
     {
       'userName': 'محمد',
@@ -32,150 +29,34 @@ class _PreviewIdeaScreenState extends State<PreviewIdeaScreen> {
     'likesCount': 0,
     'isLiked': false,
   };
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isHoveringAbout = false;
+  bool _isHoveringComments = false;
+  final TextEditingController _commentController = TextEditingController();
+  bool _showAbout = true;
 
   @override
   void initState() {
     super.initState();
   }
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isHoveringAbout = false;
-  bool _isHoveringComments = false;
-  final TextEditingController _commentController = TextEditingController();
-  bool _showAbout = true; // اجعل "حول" تظهر كافتراضي
-  Map<String, dynamic> item = {
-    'commentsCount': 0,
-    'likesCount': 0,
-    'isLiked': false,
-  };
-
-  String _profileImage = ''; // متغير لتخزين مسار الصورة
-  String _displayedText = ''; // المتغير لتخزين النص المعروض
-  String? _displayedImagePath; // المتغير لتخزين مسار الصورة المعروضة
-
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _profileImage = image.path; // تحديث مسار الصورة
-      });
-    }
-  }
-
-  void _updateContent(String title, {String? imagePath}) {
-    setState(() {
-      _displayedText = title;
-      _displayedImagePath = imagePath;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Color(0xFF0A1D47),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-
-        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildProfileSection(),
-            _buildHorizontalLine(),
-            _buildNavigationBar(),
-            _buildHorizontalLine(),
-            SizedBox(height: 40),
-            _buildProjectCards(),
-            SizedBox(height: 100), // يمكنك تغيير القيمة حسب الحاجة
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      color: Color(0xFF0A1D47),
-      height: 30,
-    );
-  }
-
-  Widget _buildProfileSection() {
-    return Container(
-      color: Colors.grey[200],
-      padding: EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      drawer: DrawerUsers(scaffoldKey: _scaffoldKey),
+      body: ListView(
         children: [
-          Text(
-            'اسم الشخص',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 10),
-          GestureDetector(
-            onTap: _pickImage,
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CircleAvatar(
-                  radius: 80,
-                  backgroundImage: _profileImage.isNotEmpty
-                      ? FileImage(File(_profileImage))
-                      : const AssetImage('assets/images/defaultpfp.jpg') as ImageProvider,
-                  child: _profileImage.isEmpty
-                      ? const Icon(Icons.camera_alt, size: 30, color: Colors.grey)
-                      : null,
-                ),
-                const Icon(Icons.edit, color: Color(0xFF0A1D47)),
-              ],
-            ),
-          ),
+          HeaderScreen(),
+          NavigationBarUsers(scaffoldKey: _scaffoldKey, onSelectContact: (value) {}),
+          const SizedBox(height: 40),
+          _buildProjectCards(),
+          const SizedBox(height: 40),
+          Footer(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHorizontalLine() {
-    return Container(
-      height: 2,
-      color: Color(0xFF0A1D47),
-    );
-  }
-
-  Widget _buildNavigationBar() {
-    return Container(
-      color: Colors.grey[200],
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildNavItem('أفكاري', MyIdeasScreen()),
-          _buildNavItem('مشاريعي الناشئة', MyStartupProjectsScreen()),
-          _buildNavItem('حسابي', ProfileScreen()),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(String title, Widget page) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.transparent,
-        ),
-        child: Text(title, style: TextStyle(color: Color(0xFF001F3F))),
       ),
     );
   }

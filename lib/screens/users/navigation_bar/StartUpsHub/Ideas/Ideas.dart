@@ -6,6 +6,7 @@ import '../../DrawerUsers/DrawerUsers.dart';
 import '../../NavigationBarUsers.dart';
 import 'IdeasInformation.dart';
 
+
 class IdeasScreen extends StatefulWidget {
   const IdeasScreen({super.key});
 
@@ -15,6 +16,8 @@ class IdeasScreen extends StatefulWidget {
 
 class _IdeasScreenState extends State<IdeasScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController _searchController = TextEditingController(); // إضافة متحكم للبحث
+
 
   final List<Map<String, dynamic>> ideas = [
     {
@@ -65,6 +68,45 @@ class _IdeasScreenState extends State<IdeasScreen> {
                 // منطق لتحديد جهة الاتصال
               },
             ),
+            const SizedBox(height: 20),
+            // مستطيل البحث
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft, // محاذاة إلى أقصى اليسار
+                child: Container(
+                  height: 50,
+                  width: 400,
+                  decoration: BoxDecoration(
+                    color: Colors.lightGreen[100], // لون الخلفية
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.orangeAccent), // لون الحدود
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Icon(
+                          Icons.search,
+                          color: Colors.orangeAccent, // لون الأيقونة
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            hintText: 'بحث...',
+                            border: InputBorder.none, // بدون حدود
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+
             const SizedBox(height: 40),
             Wrap(
               alignment: WrapAlignment.center,

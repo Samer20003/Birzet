@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
+import '../../Controllers/AuthController.dart';
 import 'ActiveUsersTable.dart';
 import 'Courses.dart';
 import 'FeedbackPage.dart';
 import 'Grants.dart';
 import 'IdeasPage.dart';
+import 'Notifications.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
 import 'UsersPage.dart';
@@ -38,7 +40,7 @@ class DashboardPage extends StatelessWidget {
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
           _buildMenuItem(context, "المنح", Grantpage()),
-
+          _buildMenuItem(context, "الاشعارات", Notifications()),
         ],
       ),
     );
@@ -65,9 +67,9 @@ class DashboardPage extends StatelessWidget {
         _buildHeader(),
         Expanded(child: _buildCharts()),
         Container(
-          height: 60, // ارتفاع المسافة
-          color: Color(0xFF2B2B2B), // اللون السكني
-          child: Center( // لإضافة العنوان في المنتصف
+          height: 60,
+          color: Color(0xFF2B2B2B),
+          child: Center(
             child: Text(
               "الطلبات المعلقة",
               style: TextStyle(
@@ -78,7 +80,7 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(child: UserRequestTable()), // تضمين UserRequestTable هنا
+        Expanded(child: UserRequestTable()),
       ],
     );
   }
@@ -138,7 +140,8 @@ class DashboardPage extends StatelessWidget {
             children: [
               _buildSmallChart(_buildProjectsChart(), 'عدد المشاريع الناشئة'),
               _buildSmallChart(_buildIdeasChart(), 'عدد الأفكار المضافة'),
-              _buildSmallChart(_buildFundedProjectsChart(), 'عدد المشاريع المستفيدة'),
+              _buildSmallChart(
+                  _buildFundedProjectsChart(), 'عدد المشاريع المستفيدة'),
             ],
           ),
           Expanded(
@@ -173,144 +176,115 @@ class DashboardPage extends StatelessWidget {
 
   Widget _buildProjectsChart() {
     final data = [
-      MonthlyData('Jan', 5),
-      MonthlyData('Feb', 10),
-      MonthlyData('Mar', 8),
-      MonthlyData('Apr', 12),
-      MonthlyData('May', 15),
-      MonthlyData('Jun', 6),
-      MonthlyData('Jul', 4),
-      MonthlyData('Aug', 9),
-      MonthlyData('Sep', 11),
-      MonthlyData('Oct', 13),
-      MonthlyData('Nov', 14),
-      MonthlyData('Dec', 7),
+      FlSpot(0, 5), FlSpot(1, 10), FlSpot(2, 8),
+      FlSpot(3, 12), FlSpot(4, 15), FlSpot(5, 6),
+      FlSpot(6, 4), FlSpot(7, 9), FlSpot(8, 11),
+      FlSpot(9, 13), FlSpot(10, 14), FlSpot(11, 7),
     ];
 
-    var series = [
-      charts.Series<MonthlyData, String>(
-        id: 'Projects',
-        data: data,
-        domainFn: (MonthlyData sales, _) => sales.month,
-        measureFn: (MonthlyData sales, _) => sales.count,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.blue),
-      ),
-    ];
-
-    return charts.BarChart(
-      series,
-      animate: true,
-      barRendererDecorator: charts.BarLabelDecorator<String>(),
-      defaultRenderer: charts.BarRendererConfig<String>(
-        strokeWidthPx: 10,
-      ),
-      domainAxis: charts.OrdinalAxisSpec(
-        renderSpec: charts.SmallTickRendererSpec(
-          labelRotation: 45,
-          labelStyle: charts.TextStyleSpec(
-            fontSize: 10,
-            color: charts.ColorUtil.fromDartColor(Colors.white54),
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
           ),
         ),
+        borderData: FlBorderData(show: true),
+        minX: 0,
+        maxX: 11,
+        minY: 0,
+        maxY: 15,
+        lineBarsData: [
+          LineChartBarData(
+            spots: data,
+            isCurved: true,
+            color: Colors.blue, // استخدام color بدلاً من colors
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildIdeasChart() {
     final data = [
-      MonthlyData('Jan', 3),
-      MonthlyData('Feb', 7),
-      MonthlyData('Mar', 6),
-      MonthlyData('Apr', 9),
-      MonthlyData('May', 11),
-      MonthlyData('Jun', 5),
-      MonthlyData('Jul', 8),
-      MonthlyData('Aug', 10),
-      MonthlyData('Sep', 12),
-      MonthlyData('Oct', 15),
-      MonthlyData('Nov', 14),
-      MonthlyData('Dec', 13),
+      FlSpot(0, 3), FlSpot(1, 7), FlSpot(2, 6),
+      FlSpot(3, 9), FlSpot(4, 11), FlSpot(5, 5),
+      FlSpot(6, 8), FlSpot(7, 10), FlSpot(8, 12),
+      FlSpot(9, 15), FlSpot(10, 14), FlSpot(11, 13),
     ];
 
-    var series = [
-      charts.Series<MonthlyData, String>(
-        id: 'Ideas',
-        data: data,
-        domainFn: (MonthlyData sales, _) => sales.month,
-        measureFn: (MonthlyData sales, _) => sales.count,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.green),
-      ),
-    ];
-
-    return charts.BarChart(
-      series,
-      animate: true,
-      barRendererDecorator: charts.BarLabelDecorator<String>(),
-      defaultRenderer: charts.BarRendererConfig<String>(
-        strokeWidthPx: 10,
-      ),
-      domainAxis: charts.OrdinalAxisSpec(
-        renderSpec: charts.SmallTickRendererSpec(
-          labelRotation: 45,
-          labelStyle: charts.TextStyleSpec(
-            fontSize: 10,
-            color: charts.ColorUtil.fromDartColor(Colors.white54),
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
           ),
         ),
+        borderData: FlBorderData(show: true),
+        minX: 0,
+        maxX: 11,
+        minY: 0,
+        maxY: 15,
+        lineBarsData: [
+          LineChartBarData(
+            spots: data,
+            isCurved: true,
+            color: Colors.green, // استخدام color بدلاً من colors
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildFundedProjectsChart() {
     final data = [
-      MonthlyData('Jan', 12),
-      MonthlyData('Feb', 10),
-      MonthlyData('Mar', 17),
-      MonthlyData('Apr', 8),
-      MonthlyData('May', 13),
-      MonthlyData('Jun', 15),
-      MonthlyData('Jul', 5),
-      MonthlyData('Aug', 16),
-      MonthlyData('Sep', 14),
-      MonthlyData('Oct', 18),
-      MonthlyData('Nov', 13),
-      MonthlyData('Dec', 9),
+      FlSpot(0, 12), FlSpot(1, 10), FlSpot(2, 17),
+      FlSpot(3, 8), FlSpot(4, 13), FlSpot(5, 15),
+      FlSpot(6, 5), FlSpot(7, 16), FlSpot(8, 14),
+      FlSpot(9, 18), FlSpot(10, 13), FlSpot(11, 9),
     ];
 
-    var series = [
-      charts.Series<MonthlyData, String>(
-        id: 'Funded Projects',
-        data: data,
-        domainFn: (MonthlyData sales, _) => sales.month,
-        measureFn: (MonthlyData sales, _) => sales.count,
-        colorFn: (_, __) => charts.ColorUtil.fromDartColor(Colors.orange),
-      ),
-    ];
-
-    return charts.BarChart(
-      series,
-      animate: true,
-      barRendererDecorator: charts.BarLabelDecorator<String>(),
-      defaultRenderer: charts.BarRendererConfig<String>(
-        strokeWidthPx: 10,
-      ),
-      domainAxis: charts.OrdinalAxisSpec(
-        renderSpec: charts.SmallTickRendererSpec(
-          labelRotation: 45,
-          labelStyle: charts.TextStyleSpec(
-            fontSize: 10,
-            color: charts.ColorUtil.fromDartColor(Colors.white54),
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(show: false),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: true),
           ),
         ),
+        borderData: FlBorderData(show: true),
+        minX: 0,
+        maxX: 11,
+        minY: 0,
+        maxY: 20,
+        lineBarsData: [
+          LineChartBarData(
+            spots: data,
+            isCurved: true,
+            color: Colors.orange, // استخدام color بدلاً من colors
+            belowBarData: BarAreaData(show: false),
+          ),
+        ],
       ),
     );
   }
 }
-
 class MonthlyData {
   final String month;
   final int count;
-
   MonthlyData(this.month, this.count);
 }
 

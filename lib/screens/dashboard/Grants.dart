@@ -4,6 +4,7 @@ import 'FeedbackPage.dart';
 import 'Courses.dart';
 import 'Dashboard.dart';
 import 'IdeasPage.dart';
+import 'Notifications.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
 import 'UsersPage.dart';
@@ -49,6 +50,8 @@ class _GrantpageState extends State<Grantpage> {
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
           _buildMenuItem(context, "المنح", Grantpage()),
+          _buildMenuItem(context, "الاشعارات", Notifications()),
+
         ],
       ),
     );

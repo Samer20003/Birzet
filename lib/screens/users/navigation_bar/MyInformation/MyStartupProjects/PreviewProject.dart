@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../../ChatForInquiries/ChatForInquiries.dart';
-import '../Activity.dart';
 import '../MyAccount.dart';
 import '../MyIdeas/MyIdeas.dart';
 import 'MyStartupProjects.dart';
@@ -137,7 +136,6 @@ class _PreviewProjectScreenState extends State<PreviewProjectScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem('سجل النشاطات', ActivityScreen()),
           _buildNavItem('أفكاري', MyIdeasScreen()),
           _buildNavItem('مشاريعي الناشئة', MyStartupProjectsScreen()),
           _buildNavItem('حسابي', ProfileScreen()),

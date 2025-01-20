@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ggg_hhh/Controllers/AuthController.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
@@ -28,6 +29,10 @@ class LoginForm extends StatelessWidget {
     print('Email: ${_emailController.text}');
     print('Password: ${_passwordController.text}');
 
+
+
+
+
     try {
       var response = await http.post(
         Uri.parse('http://localhost:3000/api/login'),
@@ -38,6 +43,49 @@ class LoginForm extends StatelessWidget {
       // // طباعة الـ statusCode و الـ response body للمساعدة في الفحص
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
+
+
+      // 200 Success
+      // 400 Bad Request
+      //500 Server Error
+      // 401  Not Authorized
+
+
+      //validation , check inputs , ex : login -> email, password, email must contains ( @ , . ), password should contains at lease one capital , one small, one number , one special character, length > 8
+
+      //
+      // if(_emailController.text.length==0){
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Please Enter  Email!')),
+      //   );
+      // }
+      // if(_passwordController.text.length==0){
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Please Enter  Password!')),
+      //   );
+      // }
+      //
+      // if(!_emailController.text.contains('Mais')){
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     SnackBar(content: Text('Please Enter Valid Email!')),
+      //   );
+      //
+      // }
+
+
+      // verification  -> if needed ( OTP , Email Verification )
+
+      // authintication
+      // login - > token
+      // New Login Method From controller
+      AuthController authController = new AuthController();
+      authController.login(_emailController.text, _passwordController.text);
+
+
+      // admin -> send notification , customer - > view ,
+
+
+
 
       if (response.statusCode == 200) {
         // إذا كانت بيانات تسجيل الدخول صحيحة

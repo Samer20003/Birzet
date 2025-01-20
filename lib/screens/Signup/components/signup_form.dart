@@ -29,12 +29,13 @@
 //       "name": _usernameController.text,
 //       "email": _emailController.text,
 //       "password": _passwordController.text,
+//       "image": null,
 //       "phoneNumber": _phoneController.text,
 //       "gender": _gender
 //     };
 //     try {
 //       var response = await http.post(
-//         Uri.parse('http://localhost:3000/api/signup'),
+//         Uri.parse('localhost:4000/api/v1/auth/signup'),
 //         headers: {"Content-Type": "application/json"},
 //         body: jsonEncode(regBody),
 //       );
@@ -296,6 +297,8 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
+import '../../dashboard/Dashboard.dart';
+import '../../investor/homepageinvestor/HomePageScreeninvestor.dart';
 import '../../users/homepageUsers/HomePageScreenUsers.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -306,49 +309,51 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  String _gender = 'Male';
+  // String _role = 'مستخدم'; // القيمة الافتراضية للرول
+  String _gender = '`ذكر`';
   bool _obscureTextPassword = true;
   bool _obscureTextConfirmPassword = true;
-  late IO.Socket socket;
+  // late IO.Socket socket;
 
   @override
   void initState() {
     super.initState();
-    _initSocket();
+    // _initSocket();
   }
 
-  void _initSocket() {
-    socket = IO.io('http://localhost:3000', <String, dynamic>{
-      'transports': ['websocket'],
-      'autoConnect': false,
-    });
-    socket.connect();
-
-    // الاستماع لرسالة نجاح التسجيل من الخادم
-    socket.on('registerSuccess', (data) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User registered successfully')),
-      );
-      _showSuccessDialog();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const homepagescreen()),
-      );
-    });
-
-    // الاستماع لرسالة خطأ
-    socket.on('registerError', (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $error')),
-      );
-    });
-  }
+  // void _initSocket() {
+  //   socket = IO.io('http://localhost:4000', <String, dynamic>{
+  //     'transports': ['websocket'],
+  //     'autoConnect': false,
+  //   });
+  //   socket.connect();
+  //
+  //   // الاستماع لرسالة نجاح التسجيل من الخادم
+  //   socket.on('registerSuccess', (data) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('User registered successfully')),
+  //     );
+  //     _showSuccessDialog();
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const homepagescreen()),
+  //     );
+  //   });
+  //
+  //   // الاستماع لرسالة خطأ
+  //   socket.on('registerError', (error) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Error: $error')),
+  //     );
+  //   });
+  // }
 
   void registerUser(BuildContext context) {
     var regBody = {
@@ -359,52 +364,71 @@ class _SignUpFormState extends State<SignUpForm> {
       "gender": _gender
     };
 
-    socket.emit('registerUser', regBody); // إرسال بيانات التسجيل إلى الخادم
+    // socket.emit('registerUser', regBody); // إرسال بيانات التسجيل إلى الخادم
+    // socket.on('registerSuccess', (data) {
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) {
+    //         switch (_role) {
+    //           case 'مستخدم':
+    //             return homepagescreen(); // الانتقال إلى صفحة المستخدم
+    //           case 'مستثمر':
+    //             return HomePageScreeninvestor(); // الانتقال إلى صفحة المستثمر
+    //           case 'أدمن':
+    //             return DashboardPage(); // الانتقال إلى صفحة الأدمن
+    //           default:
+    //             return homepagescreen(); // الصفحة الافتراضية
+    //         }
+    //       },
+    //     ),
+    //   );
+    // });
   }
 
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xE2122088),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.check_circle, color: Colors.white, size: 48),
-              SizedBox(height: 16),
-              Text(
-                "لقد تم إنشاء حسابك بنجاح",
-                style: TextStyle(color: Colors.white, fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const homepagescreen()),
-                );
-              },
-              child: const Text(
-                "حسناً",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _showSuccessDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         backgroundColor: const Color(0xE2122088),
+  //         content: const Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Icon(Icons.check_circle, color: Colors.white, size: 48),
+  //             SizedBox(height: 16),
+  //             Text(
+  //               "لقد تم إنشاء حسابك بنجاح",
+  //               style: TextStyle(color: Colors.white, fontSize: 18),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //           ],
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               Navigator.pushReplacement(
+  //                 context,
+  //                 MaterialPageRoute(builder: (context) => const homepagescreen()),
+  //               );
+  //             },
+  //             child: const Text(
+  //               "حسناً",
+  //               style: TextStyle(color: Colors.white),
+  //             ),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
-  @override
-  void dispose() {
-    socket.dispose(); // إغلاق الاتصال عند الخروج
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   socket.dispose(); // إغلاق الاتصال عند الخروج
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -423,6 +447,21 @@ class _SignUpFormState extends State<SignUpForm> {
               return null;
             },
           ),
+          const SizedBox(height: 16),
+          // _buildImageFormField(
+          //   icon: Icons.image,
+          //   hint: "رابط الصورة",
+            // controller: _imageController,
+            // validator: (value) {
+          //     if (value!.isEmpty) {
+          //       return 'يرجى إدخال رابط الصورة';
+          //     }
+          //     if (!Uri.tryParse(value)!.isAbsolute) {
+          //       return 'يرجى إدخال رابط صورة صالح';
+          //     }
+          //     return null;
+          //   },
+          // ),
           const SizedBox(height: 16),
           _buildTextFormField(
             icon: Icons.email,
@@ -496,6 +535,7 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 16),
           _buildDropdownField(),
           const SizedBox(height: 16),
+
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -528,6 +568,51 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
+// دالة بناء حقل إدخال الصورة
+  Widget _buildImageFormField({
+    required IconData icon,
+    required String hint,
+    required TextEditingController controller,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      validator: validator,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon),
+        hintText: hint,
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.url, // لتوافق إدخال روابط الصور
+    );
+  }
+  // Widget _buildRoleDropdownField() {
+  //   return Container(
+  //     constraints: BoxConstraints(maxWidth: 300),
+  //     child: DropdownButtonFormField<String>(
+  //       value: _role,
+  //       items: ['مستخدم', 'مستثمر', 'أدمن'].map((String role) {
+  //         return DropdownMenuItem<String>(
+  //           value: role,
+  //           child: Text(role),
+  //         );
+  //       }).toList(),
+  //       decoration: InputDecoration(
+  //         hintText: "اختر الفئة",
+  //         icon: Icon(Icons.group),
+  //         contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+  //         border: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(8.0),
+  //         ),
+  //       ),
+  //       onChanged: (value) {
+  //         setState(() {
+  //           _role = value!; // تحديث القيمة المحددة
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
   Widget _buildTextFormField({
     required IconData icon,
     required String hint,

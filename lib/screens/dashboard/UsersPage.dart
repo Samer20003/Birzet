@@ -5,6 +5,7 @@ import 'Dashboard.dart';
 import 'FeedbackPage.dart';
 import 'Grants.dart';
 import 'IdeasPage.dart';
+import 'Notifications.dart';
 import 'ProjectsPage.dart';
 import 'UserRequestTable.dart';
 
@@ -38,6 +39,8 @@ class UsersPage extends StatelessWidget {
           _buildMenuItem(context, "أكثر المستخدمين نشاطًا", ActiveUsers()),
           _buildMenuItem(context, "الفيد باك", FeedbackPage()),
           _buildMenuItem(context, "المنح", Grantpage()),
+          _buildMenuItem(context, "الاشعارات", Notifications()),
+
 
         ],
       ),

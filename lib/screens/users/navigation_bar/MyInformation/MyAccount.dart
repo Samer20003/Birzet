@@ -4,8 +4,9 @@ import 'dart:typed_data';
 
 import '../../homepageUsers/HomePageScreenUsers.dart';
 import 'MyIdeas/MyIdeas.dart';
-import 'Activity.dart';
 import 'MyStartupProjects/MyStartupProjects.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // لتحويل البيانات إلى JSON
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -22,6 +23,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _passwordController = TextEditingController();
   String _gender = 'ذكر';
 
+
+  Future<void> _fetchUserData() async {
+    final response = await http.get(
+      Uri.parse('https://your-backend-url.com/api/user/profile'), // استبدل بعنوان URL الخاص بك
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        _fullNameController.text = data['fullName'];
+        _emailController.text = data['email'];
+        _birthDateController.text = data['birthDate'];
+        _gender = data['gender'];
+        // يمكنك تحميل صورة الملف الشخصي إذا كانت متاحة
+        // _profileImage = ...;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل في جلب بيانات المستخدم')),
+      );
+    }
+  }
+
+  // دالة لتحديث بيانات المستخدم في الباك إند
+  Future<void> _updateUserData() async {
+    final response = await http.put(
+      Uri.parse('https://your-backend-url.com/api/user/profile'), // استبدل بعنوان URL الخاص بك
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'fullName': _fullNameController.text,
+        'email': _emailController.text,
+        'birthDate': _birthDateController.text,
+        'gender': _gender,
+        // إذا كنت ترغب في تحديث صورة الملف الشخصي، تحتاج إلى تحميلها كـ FormData
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('تم تحديث البيانات بنجاح')),
+      );
+      // العودة إلى الصفحة الرئيسية أو أي صفحة أخرى
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => homepagescreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل في تحديث البيانات')),
+      );
+    }
+  }
+
+
   // دالة لاختيار الصورة من المعرض
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
@@ -34,25 +91,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _selectBirthDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        _birthDateController.text = "${pickedDate.toLocal()}".split(' ')[0];
-      });
-    }
-  }
+
 
   void _goToEditPassword() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => EditPasswordPage()),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // جلب بيانات المستخدم عند بدء الصفحة
   }
 
   @override
@@ -143,9 +194,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem('سجل النشاطات', () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityScreen()));
-          }),
           _buildNavItem('أفكاري', () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => MyIdeasScreen()));
           }),
@@ -197,8 +245,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _buildGenderDropdown(),
           SizedBox(height: 10),
           _buildEditableRow('البريد الإلكتروني', Icons.edit, _emailController),
-          SizedBox(height: 10),
-          _buildBirthDateRow(),
           SizedBox(height: 10),
           _buildEditableRowWithNavigation('كلمة المرور', Icons.edit, _passwordController, _goToEditPassword),
           SizedBox(height: 20),
@@ -263,13 +309,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildBirthDateRow() {
-    return GestureDetector(
-      onTap: () => _selectBirthDate(context),
-      child: _buildRowWithIcon('تاريخ الميلاد', Icons.calendar_today, _birthDateController, true),
-    );
-  }
-
   Widget _buildGenderDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -312,10 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildSaveButton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => homepagescreen()),
-        );
+        _updateUserData(); // استدعاء دالة تحديث البيانات
       },
       child: Text('حفظ التعديلات'),
       style: ElevatedButton.styleFrom(
@@ -341,6 +377,37 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
   bool _isCurrentPasswordVisible = false;
   bool _isNewPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+
+  Future<void> _updatePassword() async {
+    if (_newPasswordController.text != _confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('كلمات المرور الجديدة لا تتطابق')),
+      );
+      return;
+    }
+
+    final response = await http.put(
+      Uri.parse('https://your-backend-url.com/api/user/change-password'), // استبدل بعنوان URL الخاص بك
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'currentPassword': _currentPasswordController.text,
+        'newPassword': _newPasswordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('تم تغيير كلمة المرور بنجاح')),
+      );
+      Navigator.pop(context); // العودة إلى الصفحة السابقة
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل في تغيير كلمة المرور')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -384,10 +451,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                 }),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    // هنا يمكنك إضافة منطق حفظ التعديلات
-                    Navigator.pop(context); // العودة إلى الصفحة السابقة
-                  },
+                  onPressed: _updatePassword, // استدعاء دالة تحديث كلمة المرور
                   child: Text('حفظ التعديلات'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(300, 50),

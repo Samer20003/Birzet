@@ -4,6 +4,8 @@ import '../../basic/footer.dart';
 import '../../basic/header.dart';
 import '../navigation_bar/DrawerUsers/DrawerUsers.dart';
 import '../navigation_bar/NavigationBarUsers.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class GrantsPage extends StatefulWidget {
   const GrantsPage({super.key});
@@ -14,20 +16,36 @@ class GrantsPage extends StatefulWidget {
 
 class _GrantsPageState extends State<GrantsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<Map<String, String>> grants = [
-    {
-      'institution': 'مؤسسة التعليم العالي',
-      'title': 'منحة دراسية للطلاب الجدد',
-    },
-    {
-      'institution': 'مؤسسة التنمية الاجتماعية',
-      'title': 'منحة لدعم المشاريع الصغيرة',
-    },
-    {
-      'institution': 'مؤسسة الابتكار',
-      'title': 'منحة للبحث العلمي',
-    },
-  ];
+  List<Map<String, dynamic>> grants = []; // تغيير نوع المتغير
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGrants(); // جلب البيانات عند بدء الصفحة
+  }
+
+  Future<void> _fetchGrants() async {
+    final response = await http.get(
+      Uri.parse('https://your-backend-url.com/api/grants'), // استبدل بعنوان URL الخاص بك
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonResponse = json.decode(response.body);
+      setState(() {
+        grants = jsonResponse.map((grant) {
+          return {
+            'institution': grant['institution'],
+            'title': grant['title'],
+          };
+        }).toList();
+      });
+    } else {
+      // يمكنك إضافة معالجة الأخطاء هنا
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('فشل في جلب البيانات')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +66,6 @@ class _GrantsPageState extends State<GrantsPage> {
               },
             ),
             const SizedBox(height: 40),
-            // استخدام Column بدلاً من Wrap لعرض مستطيل واحد في كل سطر
             Column(
               children: grants.map((grant) => _buildGrantCard(grant)).toList(),
             ),
@@ -60,7 +77,7 @@ class _GrantsPageState extends State<GrantsPage> {
     );
   }
 
-  Widget _buildGrantCard(Map<String, String> grant) {
+  Widget _buildGrantCard(Map<String, dynamic> grant) { // تغيير نوع المعامل
     return Container(
       width: 800, // عرض المستطيل
       margin: EdgeInsets.only(bottom: 20), // إضافة مسافة بين المستطيلات
@@ -80,7 +97,6 @@ class _GrantsPageState extends State<GrantsPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // تغيير ترتيب العناصر: زر "تقديم الآن" على اليسار
           SizedBox(
             width: 150, // تحديد عرض الزر
             child: ElevatedButton(
@@ -97,12 +113,12 @@ class _GrantsPageState extends State<GrantsPage> {
             crossAxisAlignment: CrossAxisAlignment.start, // تعديل إلى start
             children: [
               Text(
-                grant['institution']!,
+                grant['institution'], // استخدام نوع dynamic
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 4),
               Text(
-                grant['title']!,
+                grant['title'], // استخدام نوع dynamic
                 style: TextStyle(fontSize: 16),
               ),
             ],

@@ -3,7 +3,8 @@ import '../../basic/footer.dart';
 import '../../basic/header.dart';
 import '../navigation_bar/DrawerUsers/DrawerUsers.dart';
 import '../navigation_bar/NavigationBarUsers.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // لتحويل البيانات إلى JSON
 class FeedbackPage extends StatefulWidget {
   const FeedbackPage({Key? key}) : super(key: key);
 
@@ -12,6 +13,46 @@ class FeedbackPage extends StatefulWidget {
 }
 
 class _FeedbackPageState extends State<FeedbackPage> {
+
+  void _submitFeedback() async {
+    if (_formKey.currentState!.validate()) {
+      final email = _emailController.text;
+      final feedback = _feedbackController.text;
+
+      // إعداد بيانات الفيدباك
+      final Map<String, String> data = {
+        'email': email,
+        'feedback': feedback,
+      };
+
+      // إرسال بيانات الفيدباك إلى الباك إند
+      final response = await http.post(
+        Uri.parse('https://your-backend-url.com/api/feedback'), // استبدل بعنوان URL الخاص بك
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        // الفيدباك تم إرساله بنجاح
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تم إرسال الفيدباك بنجاح!')),
+        );
+        // يمكنك إعادة تعيين الحقول هنا إذا رغبت
+        _emailController.clear();
+        _feedbackController.clear();
+      } else {
+        // حدث خطأ أثناء الإرسال
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('حدث خطأ أثناء إرسال الفيدباك.')),
+        );
+      }
+    }
+  }
+
+
+
+
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _feedbackController = TextEditingController();
   final _emailController = TextEditingController(); // تعريف المتحكم للبريد الإلكتروني
@@ -29,11 +70,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
     });
   }
 
-  void _submitFeedback() {
-    if (_formKey.currentState!.validate()) {
-      // عملية الإرسال هنا
-    }
-  }
 
   @override
   void dispose() {
