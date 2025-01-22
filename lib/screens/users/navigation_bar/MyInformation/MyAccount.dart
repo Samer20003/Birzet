@@ -6,7 +6,7 @@ import '../../homepageUsers/HomePageScreenUsers.dart';
 import 'MyIdeas/MyIdeas.dart';
 import 'MyStartupProjects/MyStartupProjects.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // لتحويل البيانات إلى JSON
+import 'dart:convert';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -16,17 +16,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  Uint8List? _profileImage; // متغير لتخزين صورة الملف الشخصي
+  Uint8List? _profileImage;
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController(); // New phone controller
   String _gender = 'ذكر';
-
 
   Future<void> _fetchUserData() async {
     final response = await http.get(
-      Uri.parse('https://your-backend-url.com/api/user/profile'), // استبدل بعنوان URL الخاص بك
+      Uri.parse('https://your-backend-url.com/api/user/profile'),
     );
 
     if (response.statusCode == 200) {
@@ -36,8 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _emailController.text = data['email'];
         _birthDateController.text = data['birthDate'];
         _gender = data['gender'];
-        // يمكنك تحميل صورة الملف الشخصي إذا كانت متاحة
-        // _profileImage = ...;
+        _phoneController.text = data['phone']; // Fetching phone
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -46,10 +45,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // دالة لتحديث بيانات المستخدم في الباك إند
   Future<void> _updateUserData() async {
     final response = await http.put(
-      Uri.parse('https://your-backend-url.com/api/user/profile'), // استبدل بعنوان URL الخاص بك
+      Uri.parse('https://your-backend-url.com/api/user/profile'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -58,7 +56,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         'email': _emailController.text,
         'birthDate': _birthDateController.text,
         'gender': _gender,
-        // إذا كنت ترغب في تحديث صورة الملف الشخصي، تحتاج إلى تحميلها كـ FormData
+        'phone': _phoneController.text, // Sending phone
       }),
     );
 
@@ -66,7 +64,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('تم تحديث البيانات بنجاح')),
       );
-      // العودة إلى الصفحة الرئيسية أو أي صفحة أخرى
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => homepagescreen()),
@@ -78,20 +75,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-
-  // دالة لاختيار الصورة من المعرض
   Future<void> _pickImage() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       final bytes = await image.readAsBytes();
       setState(() {
-        _profileImage = bytes; // تحديث الصورة
+        _profileImage = bytes;
       });
     }
   }
-
-
 
   void _goToEditPassword() {
     Navigator.push(
@@ -103,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchUserData(); // جلب بيانات المستخدم عند بدء الصفحة
+    _fetchUserData();
   }
 
   @override
@@ -134,7 +127,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ويدجيت لرأس الشاشة
   Widget _buildHeader() {
     return Container(
       color: Color(0xFF0A1D47),
@@ -142,7 +134,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ويدجيت لعرض معلومات الملف الشخصي
   Widget _buildProfileSection() {
     return Container(
       color: Colors.grey[200],
@@ -178,7 +169,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ويدجيت لخط أفقي
   Widget _buildHorizontalLine() {
     return Container(
       height: 2,
@@ -186,7 +176,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ويدجيت لعرض شريط التنقل
   Widget _buildNavigationBar() {
     return Container(
       color: Colors.grey[200],
@@ -208,7 +197,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // ويدجيت لإنشاء عنصر تنقل
   Widget _buildNavItem(String title, Function onTap) {
     return InkWell(
       onTap: () {
@@ -242,9 +230,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           SizedBox(height: 10),
           _buildEditableRow('الاسم الكامل', Icons.edit, _fullNameController),
           SizedBox(height: 10),
+          _buildEditableRow('البريد الإلكتروني', Icons.edit, _emailController),
+          SizedBox(height: 10),
           _buildGenderDropdown(),
           SizedBox(height: 10),
-          _buildEditableRow('البريد الإلكتروني', Icons.edit, _emailController),
+          _buildEditableRow('رقم الهاتف', Icons.phone, _phoneController), // New phone field
           SizedBox(height: 10),
           _buildEditableRowWithNavigation('كلمة المرور', Icons.edit, _passwordController, _goToEditPassword),
           SizedBox(height: 20),
@@ -351,7 +341,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildSaveButton() {
     return ElevatedButton(
       onPressed: () {
-        _updateUserData(); // استدعاء دالة تحديث البيانات
+        _updateUserData();
       },
       child: Text('حفظ التعديلات'),
       style: ElevatedButton.styleFrom(
@@ -363,7 +353,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// تأكد من إضافة صفحة EditPasswordPage في مشروعك
 class EditPasswordPage extends StatefulWidget {
   @override
   _EditPasswordPageState createState() => _EditPasswordPageState();
@@ -387,7 +376,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
     }
 
     final response = await http.put(
-      Uri.parse('https://your-backend-url.com/api/user/change-password'), // استبدل بعنوان URL الخاص بك
+      Uri.parse('https://your-backend-url.com/api/user/change-password'),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -401,7 +390,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('تم تغيير كلمة المرور بنجاح')),
       );
-      Navigator.pop(context); // العودة إلى الصفحة السابقة
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('فشل في تغيير كلمة المرور')),
@@ -451,7 +440,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
                 }),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _updatePassword, // استدعاء دالة تحديث كلمة المرور
+                  onPressed: _updatePassword,
                   child: Text('حفظ التعديلات'),
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(300, 50),

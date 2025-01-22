@@ -1,44 +1,58 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
   final String baseUrl = "http://localhost:4000/api/v1/auth"; // Adjust based on your API endpoint
 
-  // Sign Up method
-  Future<Map<String, dynamic>> signup(String name, String email,String password,   File? image, // ملف الصورة
+
+  Future<Map<String, dynamic>> signupWithDio(
+      String name,
+      String email,
+      String password,
+      Uint8List? imageBytes,
+      String phoneNumber,
+      String gender,
+      String userType,
       ) async {
-    final url = Uri.parse('$baseUrl/signup');
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(
-          {'name': name,
-            'email': email,
-            'password': password,
+    try {
+      final dio = Dio();
+      final formData = FormData.fromMap({
+        'name': name,
+        'email': email,
+        'password': password,
+        'phoneNumber': phoneNumber,
+        'gender': gender,
+        'userType': userType,
+        if (imageBytes!.isNotEmpty)
+          'image': MultipartFile.fromBytes(imageBytes,
+              filename: 'uploaded_image.jpg'),
+      });
 
+      final response = await dio.post(
+        'http://localhost:4000/api/v1/auth/signup',
+        data: formData,
+        options: Options(contentType: 'multipart/form-data'),
+      );
 
-
-          }),
-    );
-
-    if (response.statusCode == 201) {
-      return {'success': true, 'message': jsonDecode(response.body)['message']};
-    } else {
-      return {'success': false, 'message': jsonDecode(response.body)['message']};
+      if (response.statusCode == 201) {
+        return {
+          'success': true,
+          'message': response.data['message'] ?? 'Account created successfully',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': response.data['message'] ?? 'Registration failed',
+        };
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
     }
-
-    // if (image != null) {
-    //   request.files.add(await http.MultipartFile.fromPath(
-    //     'image', // المفتاح المستخدم في الباك اند لاستقبال الصورة
-    //     image.path,
-    //   ));
-    // }
-
-
   }
-
 
 
   // Login method

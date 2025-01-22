@@ -261,7 +261,7 @@ class _PreviewProjectScreenState extends State<PreviewProjectScreen> {
             16,
             16,
           ),
-          _buildAboutSection('الموقع',
+          _buildAboutSection('الموقع الالكتروني ',
               GestureDetector(
                 onTap: () {
                   },
@@ -318,29 +318,10 @@ class _PreviewProjectScreenState extends State<PreviewProjectScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           _buildProgressSection('تاريخ الإنشاء', '01/01/2024', 20, 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // محاذاة لليسار
-                children: [
-                  Text(
-                    'تاريخ محدد',
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.grey), // نص صغير
-                  ),
-                ],
-              ),
-              SizedBox(width: 5), // مسافة بين النصين
-              _buildProgressSection('تاريخ الانتهاء', '30/06/2024', 20, 18),
-            ],
-          ),
           SizedBox(height: 10),
           _buildProgressSectionWithProgress(
               'المرحلة الحالية', 'مرحلة التحقق والتخطيط', 20, 18, 0.4),
-          _buildProgressSection(
-              'التحديات', ' نواجه بعض التحديات في التنفيذ \n نقص في الموارد',
-              16, 14),
+
         ],
       ),
     );

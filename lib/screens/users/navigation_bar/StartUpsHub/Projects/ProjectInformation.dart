@@ -100,7 +100,7 @@ class _ProjectInformationScreenState extends State<ProjectInformationScreen> {
         color: Color(0xFFF0F0F0),
         borderRadius: BorderRadius.circular(15),
       ),
-      height: 500,
+      height: 700,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -165,7 +165,7 @@ class _ProjectInformationScreenState extends State<ProjectInformationScreen> {
             16,
             16,
           ),
-          _buildAboutSection('الموقع',
+          _buildAboutSection(' الموقع الالكتروني ',
               GestureDetector(
                 onTap: () {
                   // يمكنك إضافة وظيفة هنا لفتح الموقع عند الضغط
@@ -182,6 +182,8 @@ class _ProjectInformationScreenState extends State<ProjectInformationScreen> {
               16,
               14
           ),
+          _buildProgressSection('تاريخ الإنشاء', '01/01/2024', 20, 18),
+
           _buildAboutSection('نبذة عن المشروع',
               'يطمح المشروع إلى تحقيق نتائج ملموسة تسهم في تحسين العمليات المختلفة...',
               16, 14),
@@ -222,30 +224,11 @@ class _ProjectInformationScreenState extends State<ProjectInformationScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildProgressSection('تاريخ الإنشاء', '01/01/2024', 20, 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // محاذاة لليسار
-                children: [
-                  Text(
-                    'تاريخ محدد',
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.grey), // نص صغير
-                  ),
-                ],
-              ),
-              SizedBox(width: 5), // مسافة بين النصين
-              _buildProgressSection('تاريخ الانتهاء', '30/06/2024', 20, 18),
-            ],
-          ),
+
           SizedBox(height: 10),
           _buildProgressSectionWithProgress(
               'المرحلة الحالية', 'مرحلة التحقق والتخطيط', 20, 18, 0.4),
-          _buildProgressSection(
-              'التحديات', ' نواجه بعض التحديات في التنفيذ \n نقص في الموارد',
-              16, 14),
+
         ],
       ),
     );

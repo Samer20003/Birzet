@@ -11,6 +11,7 @@ class AddStartupProjectScreen extends StatefulWidget {
 }
 
 class _AddStartupProjectScreenState extends State<AddStartupProjectScreen> {
+  String? selectedCity; // متغير لتخزين المدينة المختارة
   final ImagePicker _picker = ImagePicker();
   String? imagePath; // Variable to hold the selected image path
   final TextEditingController _shortDescriptionController = TextEditingController();
@@ -86,20 +87,13 @@ class _AddStartupProjectScreenState extends State<AddStartupProjectScreen> {
                     Container(width: 120, child: _buildMonthDropdown()),
                   ],
                 ),
+                SizedBox(height: 10),
+                // إضافة Dropdown للمدن
+                Text('اختر المدينة', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold)),
+                _buildCityDropdown(),
+                SizedBox(height: 10),
                 SizedBox(height: 20),
                 // New section for end date
-                Text('تاريخ الانتهاء', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold)),
-                _buildEndDateDropdown(),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(width: 120, child: _buildYearDropdown()),
-                    SizedBox(width: 10),
-                    Container(width: 120, child: _buildMonthDropdown()),
-                  ],
-                ),
-                SizedBox(height: 20),
                 Text('المرحلة الحالية للمشروع', textAlign: TextAlign.right, style: TextStyle(fontWeight: FontWeight.bold)),
                 _buildStageDropdownField(),
                 SizedBox(height: 10),
@@ -120,8 +114,6 @@ class _AddStartupProjectScreenState extends State<AddStartupProjectScreen> {
                 _buildImageUploadField(),
                 SizedBox(height: 30),
                 // New section for challenges
-                _buildLabeledTextField('التحديات المحتملة', maxLines: 3, controller: _challengesController),
-                SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text('${_challengesController.text.length}/200', style: TextStyle(color: Colors.grey)),
@@ -183,7 +175,41 @@ class _AddStartupProjectScreenState extends State<AddStartupProjectScreen> {
       ),
     );
   }
-
+  Widget _buildCityDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(height: 8),
+        Container(
+          width: 700,
+          color: Colors.white,
+          child: DropdownButtonFormField<String>(
+            value: selectedCity,
+            items: [
+              'نابلس',
+              'جنين',
+              'قلقيلية',
+              'رام الله',
+              'طولكرم',
+            ].map((String city) {
+              return DropdownMenuItem<String>(
+                value: city,
+                child: Text(city),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedCity = value; // تخزين المدينة المختارة
+              });
+            },
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   Widget _buildLabeledTextField(String label, {int maxLines = 1, int? maxLength, TextEditingController? controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -210,35 +236,6 @@ class _AddStartupProjectScreenState extends State<AddStartupProjectScreen> {
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               counterText: '', // Hide default counter
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // New method for end date dropdown
-  Widget _buildEndDateDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        SizedBox(height: 8),
-        Container(
-          width: 700,
-          color: Colors.white,
-          child: DropdownButtonFormField<String>(
-            items: [
-              DropdownMenuItem(value: 'تاريخ محدد', child: Text('تاريخ محدد')),
-              DropdownMenuItem(value: 'قيد التنفيذ', child: Text('قيد التنفيذ')),
-              DropdownMenuItem(value: 'غير مكتمل', child: Text('غير مكتمل')),
-              DropdownMenuItem(value: 'تاريخ متوقع', child: Text('تاريخ متوقع')),
-              DropdownMenuItem(value: 'مؤجل', child: Text('مؤجل')),
-            ],
-            onChanged: (value) {
-              // Handle the selection
-            },
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
             ),
           ),
         ),
