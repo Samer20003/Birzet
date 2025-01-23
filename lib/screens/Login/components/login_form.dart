@@ -1,146 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:ggg_hhh/Controllers/AuthController.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../../../Utils/router.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
-import '../../Login/components/forgot_password.dart'; // تأكد من استيراد صفحة استعادة كلمة المرور
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
+import '../../Login/components/forgot_password.dart';
 import '../../users/homepageUsers/HomePageScreenUsers.dart';
 
 class LoginForm extends StatelessWidget {
-  LoginForm({
-    Key? key,
-  }) : super(key: key);
-  final _formKey = GlobalKey<FormState>();
+  LoginForm({Key? key}) : super(key: key);
 
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // void loginUser(BuildContext context) async {
-  //   var loginBody = {
-  //     "email": _emailController.text,
-  //     "password": _passwordController.text,
-  //   };
-  //
-  //   print('Email: ${_emailController.text}');
-  //   print('Password: ${_passwordController.text}');
-  // }
+  Future<void> loginUser(BuildContext context) async {
+    final loginBody = {
+      "email": _emailController.text,
+      "password": _passwordController.text,
+    };
 
-    //
-    //
-    // try {
-    //   var response = await http.post(
-    //     Uri.parse('http://localhost:3000/api/login'),
-    //     headers: {"Content-Type": "application/json"},
-    //     body: jsonEncode(loginBody),
-    //   );
+    try {
+      // Make the POST request to your API
+      final response = await http.post(
+        Uri.parse('http://localhost:4000/api/v1/auth/signin'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(loginBody),
+      );
 
-      // // طباعة الـ statusCode و الـ response body للمساعدة في الفحص
-      // print('Response status: ${response.statusCode}');
-      // print('Response body: ${response.body}');
+      // Handle the API response
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
 
+        // Show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful!')),
+        );
 
-      // 200 Success
-      // 400 Bad Request
-      //500 Server Error
-      // 401  Not Authorized
-
-
-      //validation , check inputs , ex : login -> email, password, email must contains ( @ , . ), password should contains at lease one capital , one small, one number , one special character, length > 8
-
-      //
-      // if(_emailController.text.length==0){
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Please Enter  Email!')),
-      //   );
-      // }
-      // if(_passwordController.text.length==0){
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Please Enter  Password!')),
-      //   );
-      // }
-      //
-      // if(!_emailController.text.contains('Mais')){
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     SnackBar(content: Text('Please Enter Valid Email!')),
-      //   );
-      //
-      // }
-
-
-      // verification  -> if needed ( OTP , Email Verification )
-
-      // authintication
-      // login - > token
-      // New Login Method From controller
-      // AuthController authController = new AuthController();
-      // authController.login(_emailController.text, _passwordController.text);
-
-
-      // admin -> send notification , customer - > view ,
-
-    //
-    //
-    //
-    //   if (response.statusCode == 200) {
-    //     // إذا كانت بيانات تسجيل الدخول صحيحة
-    //     var responseData = jsonDecode(response.body);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Login successful!')),
-    //     );
-    //
-    //     // الانتقال إلى الصفحة الرئيسية أو الصفحة التالية
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) {
-    //           return const homepagescreen();
-    //         },
-    //       ),
-    //     );
-    //   } else if (response.statusCode == 404) {
-    //    // إذا كان البريد الإلكتروني غير موجود
-    //     var responseData = jsonDecode(response.body);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('User not found. Please check your email address.')),
-    //     );
-    //   } else if (response.statusCode == 401) {
-    //     //إذا كانت كلمة المرور غير صحيحة
-    //     var responseData = jsonDecode(response.body);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Invalid password. Please check your password.')),
-    //     );
-    //   } else if (response.statusCode == 400) {
-    //     //إذا كانت البيانات غير مكتملة
-    //     var responseData = jsonDecode(response.body);
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text(responseData['message'] ?? 'Please provide email and password')),
-    //     );
-    //   } else {
-    //     // إذا كانت هناك مشكلة أخرى
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text('Error: ${response.body}')),
-    //     );
-    //   }
-    // } catch (error) {
-    //   // إذا فشل الاتصال بالخادم
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Failed to connect to server: $error')),
-    //   );
-    // }
+        // Navigate to the homepage
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const homepagescreen(),
+          ),
+        );
+      } else if (response.statusCode == 401) {
+        // Invalid credentials
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Invalid email or password.')),
+        );
+      } else {
+        // Other errors
+        final errorData = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Login failed')),
+        );
+      }
+    } catch (error) {
+      // Handle server or connection errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to connect to the server: $error')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: _formKey, // ربط الـformKey
+      key: _formKey,
       child: Column(
         children: [
+          // Email input field
           TextFormField(
-            controller: _emailController, // ربط الـcontroller هنا
+            controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
@@ -151,66 +85,62 @@ class LoginForm extends StatelessWidget {
                 child: Icon(Icons.email),
               ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your email.';
+              }
+              if (!RegExp(r"^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+                  .hasMatch(value)) {
+                return 'Please enter a valid email.';
+              }
+              return null;
+            },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              controller: _passwordController, // ربط الـcontroller هنا
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
-                hintText: "كلمة المرور",
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
+          const SizedBox(height: defaultPadding),
+
+          // Password input field
+          TextFormField(
+            controller: _passwordController,
+            obscureText: true,
+            textInputAction: TextInputAction.done,
+            cursorColor: kPrimaryColor,
+            decoration: const InputDecoration(
+              hintText: "كلمة المرور",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.lock),
               ),
             ),
-          ),
-        ElevatedButton(
-          onPressed: () async {
-            if (_formKey.currentState?.validate() ?? false) {
-              try {
-                AuthController authController = AuthController();
-                final result = await authController.login(
-                  _emailController.text,
-                  _passwordController.text,
-                );
-
-                if (result['success']) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => homepagescreen()),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(result['message'] ?? 'Login failed')),
-                  );
-                }
-              } catch (error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('An error occurred: $error')),
-                );
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password.';
               }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Please fix the errors in the form')),
-              );
-            }
-          },
-          child: Text('تسجيل الدخول'),
+              if (value.length < 8) {
+                return 'Password must be at least 8 characters.';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: defaultPadding),
 
-        ),
+          // Login button
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState?.validate() ?? false) {
+                loginUser(context);
+              }
+            },
+            child: const Text('تسجيل الدخول'),
+          ),
+          const SizedBox(height: defaultPadding),
 
-
-        const SizedBox(height: defaultPadding),
+          // Forgot Password link
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ForgotPasswordScreen(), // الانتقال إلى صفحة استعادة كلمة المرور
+                  builder: (context) => const ForgotPasswordScreen(),
                 ),
               );
             },
@@ -219,19 +149,19 @@ class LoginForm extends StatelessWidget {
               style: TextStyle(
                 color: kPrimaryColor,
                 fontSize: 16,
-                fontWeight: FontWeight.bold, // جعل النص بالخط العريض
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
           const SizedBox(height: defaultPadding),
+
+          // Sign-up link
           AlreadyHaveAnAccountCheck(
             press: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) {
-                    return const SignUpScreen();
-                  },
+                  builder: (context) => const SignUpScreen(),
                 ),
               );
             },
